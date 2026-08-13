@@ -1485,15 +1485,15 @@ ul, ol { list-style: none; }
    FOOTER
    ═══════════════════════════════════════════════════════════════ */
 .site-footer {
-    background: var(--bg-page);
-    color: var(--text-400);
+    background: linear-gradient(180deg, #edf6f2 0%, #e2efe9 100%);
+    color: var(--text-700);
     padding-top: 0;
-    border-top: 1px solid var(--text-200);
+    border-top: 1px solid rgba(31, 43, 45, 0.08);
 }
 
 .newsletter-band {
-    background: var(--bg-section);
-    border-bottom: 1px solid var(--text-200);
+    background: linear-gradient(90deg, #dfeee7 0%, #e6f4ee 50%, #dfeee7 100%);
+    border-bottom: 1px solid rgba(31, 43, 45, 0.08);
     padding: 36px 0;
 }
 
@@ -1507,8 +1507,18 @@ ul, ol { list-style: none; }
     gap: 32px;
 }
 
-.newsletter-text h3 { font-size: 18px; font-weight: 800; color: var(--white); margin-bottom: 4px; }
-.newsletter-text p  { font-size: 14px; color: rgba(255,255,255,.75); }
+.newsletter-text h3 { font-size: 18px; font-weight: 800; color: var(--text-900); margin-bottom: 4px; }
+.newsletter-text p  { font-size: 14px; color: var(--text-500); }
+
+.footer-title,
+.footer-link-list a,
+.footer-address-text,
+.footer-legal-text,
+.footer-social-header,
+.footer-bottom,
+.footer-bottom a {
+    color: var(--text-700) !important;
+}
 
 .newsletter-form {
     display: flex;
@@ -1545,7 +1555,7 @@ ul, ol { list-style: none; }
 
 .footer-col-3 {
     padding: 0 32px;
-    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    border-right: 1px solid rgba(31, 43, 45, 0.12);
 }
 
 .footer-col-3:first-child {
@@ -1560,7 +1570,7 @@ ul, ol { list-style: none; }
 .footer-title {
     font-size: 1.15rem;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--text-900);
     margin-bottom: 24px;
     letter-spacing: .01em;
 }
@@ -1583,20 +1593,20 @@ ul, ol { list-style: none; }
 .footer-link-list a {
     font-size: 13.5px;
     font-weight: 700;
-    color: var(--sage-300);
+    color: var(--sage-700);
     text-decoration: none;
     transition: var(--t-sm);
     letter-spacing: .04em;
 }
 
 .footer-link-list a:hover {
-    color: #ffffff;
+    color: var(--text-900);
     transform: translateX(2px);
 }
 
 .footer-address-text {
     font-size: 13.5px;
-    color: var(--text-500);
+    color: var(--text-700);
     line-height: 1.6;
     margin-bottom: 24px;
 }
@@ -1647,7 +1657,7 @@ ul, ol { list-style: none; }
 
 .footer-legal-text {
     font-size: 13px;
-    color: var(--text-500);
+    color: var(--text-700);
     line-height: 1.65;
     margin-bottom: 24px;
 }
@@ -1655,7 +1665,7 @@ ul, ol { list-style: none; }
 .footer-social-header {
     font-size: 13px;
     font-weight: 700;
-    color: #f8fafc;
+    color: var(--text-900);
     margin-bottom: 12px;
 }
 
@@ -1712,7 +1722,7 @@ ul, ol { list-style: none; }
 .footer-social-card.tt:hover  { background: #111111 !important; border-color: #00F2FE !important; color: #00F2FE !important; transform: translateY(-2px); }
 
 .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,.06);
+    border-top: 1px solid rgba(31, 43, 45, 0.08);
     padding: 16px 24px;
     max-width: 1240px;
     margin: 0 auto;
@@ -1720,10 +1730,11 @@ ul, ol { list-style: none; }
     align-items: center;
     justify-content: space-between;
     font-size: 12.5px;
-    color: rgba(255,255,255,.3);
+    color: var(--text-600);
+    background: rgba(255,255,255,0.12);
 }
-.footer-bottom a { color: rgba(255,255,255,.35); text-decoration: none; transition: var(--t-sm); }
-.footer-bottom a:hover { color: rgba(255,255,255,.7); }
+.footer-bottom a { color: var(--text-700); text-decoration: none; transition: var(--t-sm); }
+.footer-bottom a:hover { color: var(--text-900); }
 
 /* ═══════════════════════════════════════════════════════════════
    WHATSAPP FLOATING BUTTON + CHATBOT

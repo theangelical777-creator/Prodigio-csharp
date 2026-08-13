@@ -1,5 +1,6 @@
 @inject IJSRuntime JS
 @inject HttpClient Http
+@inject IConfiguration Configuration
 @using System.Net.Http.Headers
 @using System.Text.Json
 
@@ -82,11 +83,14 @@
 </div>
 
 @code {
-    private const string GroqModel = "llama-3.3-70b-versatile";
+    private string GroqModel => Configuration["Groq:Model"] ?? "llama-3.3-70b-versatile";
     private bool isOpen = false;
     private string inputText = "";
     private bool isThinking = false;
-    private string GroqApiKey => Environment.GetEnvironmentVariable("GROQ_API_KEY") ?? string.Empty;
+    private string GroqApiKey =>
+        Environment.GetEnvironmentVariable("GROQ_API_KEY")
+        ?? Configuration["Groq:ApiKey"]
+        ?? string.Empty;
 
     public class Msg
     {
