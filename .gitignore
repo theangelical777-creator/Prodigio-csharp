@@ -13,3 +13,9 @@
 ## OS generated files
 .DS_Store
 Thumbs.db
+
+## Publish outputs
+publish_output/
+publish_test/
+output/
+
