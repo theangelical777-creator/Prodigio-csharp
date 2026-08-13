@@ -28,10 +28,19 @@ jobs:
 
       - name: Fix base href for GitHub Pages
         run: |
-          sed -i 's|<base href="/" />|<base href="/Prodigio-csharp/" />|g' output/wwwroot/index.html
-          cp output/wwwroot/index.html output/wwwroot/404.html
-          touch output/wwwroot/.nojekyll
-          echo "/* /index.html 200" > output/wwwroot/_redirects
+          python - <<'PY'
+          from pathlib import Path
+          for rel in [Path('output/wwwroot/index.html'), Path('output/wwwroot/404.html')]:
+              if rel.exists():
+                  text = rel.read_text(encoding='utf-8')
+                  text = text.replace('<base href="/" />', '<base href="./" />')
+                  text = text.replace('<base href="/Prodigio-csharp/" />', '<base href="./" />')
+                  rel.write_text(text, encoding='utf-8')
+          Path('output/wwwroot/.nojekyll').write_text('', encoding='utf-8')
+          Path('output/wwwroot/_redirects').write_text('/* /index.html 200\n', encoding='utf-8')
+          if not Path('output/wwwroot/404.html').exists():
+              Path('output/wwwroot/404.html').write_text(Path('output/wwwroot/index.html').read_text(encoding='utf-8'), encoding='utf-8')
+          PY
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

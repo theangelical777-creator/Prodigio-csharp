@@ -1,0 +1,32 @@
+/_framework/*.wasm
+  Content-Type: application/wasm
+
+/_framework/*.wasm.br
+  Content-Type: application/wasm
+  Content-Encoding: br
+
+/_framework/*.wasm.gz
+  Content-Type: application/wasm
+  Content-Encoding: gzip
+
+/_framework/*.js
+  Content-Type: application/javascript
+
+/_framework/*.js.br
+  Content-Type: application/javascript
+  Content-Encoding: br
+
+/_framework/*.js.gz
+  Content-Type: application/javascript
+  Content-Encoding: gzip
+
+/_framework/*.dat
+  Content-Type: application/octet-stream
+
+/_framework/*.dat.br
+  Content-Type: application/octet-stream
+  Content-Encoding: br
+
+/_framework/*.dat.gz
+  Content-Type: application/octet-stream
+  Content-Encoding: gzip
