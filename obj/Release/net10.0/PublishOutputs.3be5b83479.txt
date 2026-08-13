@@ -1,0 +1,4 @@
+C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\publish_test\wwwroot\index.html
+C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\publish_test\ProdigioApp.runtimeconfig.json
+C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\publish_test\dotnet.js
+C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\publish_test\web.config

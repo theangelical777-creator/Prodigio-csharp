@@ -1,0 +1,5 @@
+C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\dist_output\wwwroot\404.html
+C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\dist_output\wwwroot\index.html
+C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\dist_output\ProdigioApp.runtimeconfig.json
+C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\dist_output\dotnet.js
+C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\dist_output\web.config

@@ -1,0 +1,134 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.VerifyReferenceTrimCompatibility = 
+build_property.VerifyReferenceAotCompatibility = 
+build_property.TargetFramework = net10.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v10.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = ProdigioApp
+build_property.RootNamespace = ProdigioApp
+build_property.ProjectDir = C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.RazorLangVersion = 10.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\SERRANO\.gemini\antigravity\scratch\prodigio-csharp
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 10.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Layout/Footer.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEZvb3Rlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Layout/TopNavbar.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XFRvcE5hdmJhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Accesorios.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjZXNvcmlvcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Admin/Dashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cRGFzaGJvYXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Admin/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Comprar.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcHJhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Contacto.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udGFjdG8ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Cotizador.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ290aXphZG9yLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Facturas/Crear.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmFjdHVyYXNcQ3JlYXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Facturas/Detalle.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmFjdHVyYXNcRGV0YWxsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Facturas/Editar.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmFjdHVyYXNcRWRpdGFyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Facturas/Lista.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmFjdHVyYXNcTGlzdGEucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/MisionVision.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWlzaW9uVmlzaW9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Nosotros.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm9zb3Ryb3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/NotFound.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm90Rm91bmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Reparar.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwYXJhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Vender.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmVuZGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Pages/Weather.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2VhdGhlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Shared/ChatBotFloating.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXENoYXRCb3RGbG9hdGluZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Shared/ConfirmDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXENvbmZpcm1EaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-izy3rcxzfk
+
+[C:/Users/SERRANO/.gemini/antigravity/scratch/prodigio-csharp/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-l3akxmpjus
