@@ -1,4 +1,7 @@
 @inject IJSRuntime JS
+@inject HttpClient Http
+@using System.Net.Http.Headers
+@using System.Text.Json
 
 <div class="chatbot-wrap">
     @if (isOpen)
@@ -79,8 +82,11 @@
 </div>
 
 @code {
+    private const string GroqModel = "llama-3.3-70b-versatile";
     private bool isOpen = false;
     private string inputText = "";
+    private bool isThinking = false;
+    private string GroqApiKey => Environment.GetEnvironmentVariable("GROQ_API_KEY") ?? string.Empty;
 
     public class Msg
     {
@@ -110,77 +116,147 @@
         }
     }
 
-    private void OnKey(KeyboardEventArgs e) { if (e.Key == "Enter") Send(); }
-
-    private void Send()
+    private async Task OnKey(KeyboardEventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(inputText)) return;
+        if (e.Key == "Enter")
+        {
+            await Send();
+        }
+    }
+
+    private async Task Send()
+    {
+        if (string.IsNullOrWhiteSpace(inputText) || isThinking) return;
+
         var text = inputText.Trim();
         inputText = "";
         msgs.Add(new Msg { IsUser = true, Text = text });
-        BotReply(text);
+        await BotReply(text);
     }
 
-    private void Quick(string key)
+    private async Task Quick(string key)
     {
+        if (isThinking) return;
+
         string q = key switch
         {
             "precotizar"    => "Quiero precotizar un equipo",
-            "financiamiento"=> "¿Cómo funciona el Financiamiento Fiao?",
+            "financiamiento" => "¿Cómo funciona el Financiamiento Fiao?",
             "tradein"       => "¿Cuánto vale mi celular en Trade-In?",
             "garantia"      => "¿Cómo funciona la garantía de 12 meses?",
             "asesor"        => "Quiero hablar con un asesor",
             _               => key
         };
+
         msgs.Add(new Msg { IsUser = true, Text = q });
-        BotReply(key);
+        await BotReply(q);
     }
 
-    private void BotReply(string q)
+    private async Task BotReply(string q)
     {
-        var lq = q.ToLower();
-        string reply;
+        isThinking = true;
+        try
+        {
+            var lq = q.ToLower();
+            string reply;
 
-        if (lq == "precotizar" || lq.Contains("precotiz") || lq.Contains("cotiz"))
-        {
-            reply = "💡 <b>Módulo de Precotización</b><br/>Escribe tu presupuesto en pesos (ej: <i>25000</i>) y te recomendaré equipos con su cuota estimada.<br/><br/>También puedes usar la <a href='/cotizador' style='color:var(--sage-300);font-weight:700;'>Calculadora Interactiva →</a>";
-        }
-        else if (lq == "financiamiento" || lq.Contains("financiam") || lq.Contains("fiao") || lq.Contains("cuota"))
-        {
-            reply = "💳 <b>Financiamiento Fiao:</b><br/>• Inicial desde el <b>20%</b> del precio<br/>• Plazos: 3, 6 o 12 meses<br/>• Cuotas quincenales o mensuales<br/>• Aprobación inmediata con tu cédula<br/>• Sin historial crediticio negativo<br/><br/>👉 Usa la <a href='/cotizador' style='color:var(--sage-300);font-weight:700;'>Calculadora de Cuotas →</a>";
-        }
-        else if (lq == "tradein" || lq.Contains("trade") || lq.Contains("cambio") || lq.Contains("usado"))
-        {
-            reply = "🔄 <b>Trade-In Prodigio:</b><br/>Recibimos tu celular usado como parte de pago.<br/><br/>💰 <b>Bono adicional:</b> +$2,000 RD$ sobre la tasación de mercado.<br/><br/>Marcas aceptadas: Apple, Samsung, Xiaomi, Motorola y más.<br/><br/>Escríbenos para valuar tu equipo: <a href='https://wa.me/18095550199?text=Hola,%20quiero%20hacer%20Trade-In' target='_blank' style='color:#25D366;font-weight:700;'>WhatsApp →</a>";
-        }
-        else if (lq == "garantia" || lq.Contains("garantia") || lq.Contains("garantía"))
-        {
-            reply = "🛡️ <b>Garantía Escrita de 12 Meses:</b><br/>Todos los equipos Grado A+ incluyen:<br/>• Certificado físico de garantía<br/>• Cobertura en hardware y software<br/>• Servicio técnico en tienda sin costo<br/>• Sin letra pequeña ni cargos ocultos<br/><br/>Garantía válida en nuestra tienda de Santo Domingo.";
-        }
-        else if (lq == "asesor" || lq.Contains("asesor") || lq.Contains("humano") || lq.Contains("persona") || lq.Contains("whatsapp"))
-        {
-            reply = "👤 <b>Contactar un Asesor:</b><br/>Nuestro equipo de ventas está disponible Lun–Sáb 9am–8pm.<br/><br/>🟢 <a href='https://wa.me/18095550199?text=Hola%20Prodigio%20Tecnológico,%20necesito%20asesoría' target='_blank' style='color:#25D366;font-weight:700;'>Abrir WhatsApp: +1 (809) 555-0199 →</a>";
-        }
-        else if (System.Text.RegularExpressions.Regex.IsMatch(lq, @"\d{4,}"))
-        {
-            var m = System.Text.RegularExpressions.Regex.Match(lq, @"\d+");
-            if (int.TryParse(m.Value, out int budget))
+            if (lq == "precotizar" || lq.Contains("precotiz") || lq.Contains("cotiz"))
             {
-                if (budget < 15000)
-                    reply = $"📊 <b>Para ${budget:N0} RD$:</b><br/>• 📱 Tecno Spark 20 Pro+ – $13,900 RD$ (Cuota: ~$1,390/mes)<br/>• 📱 Infinix Hot 40 Pro – $11,900 RD$ (Cuota: ~$1,190/mes)<br/><br/>👉 <a href='/tienda' style='color:var(--sage-300);font-weight:700;'>Ver todos los equipos →</a>";
-                else if (budget < 35000)
-                    reply = $"📊 <b>Para ${budget:N0} RD$:</b><br/>• 📱 iPhone 13 (128GB) – $29,500 RD$ (Cuota: ~$2,950/mes)<br/>• 📱 Samsung Galaxy S23 FE – $28,900 RD$ (Cuota: ~$2,890/mes)<br/>• 📱 Tecno Camon 30 Pro 5G – $18,500 RD$<br/><br/>👉 <a href='/tienda' style='color:var(--sage-300);font-weight:700;'>Ver todos los equipos →</a>";
+                reply = "💡 <b>Módulo de Precotización</b><br/>Escribe tu presupuesto en pesos (ej: <i>25000</i>) y te recomendaré equipos con su cuota estimada.<br/><br/>También puedes usar la <a href='/cotizador' style='color:var(--sage-300);font-weight:700;'>Calculadora Interactiva →</a>";
+            }
+            else if (lq == "financiamiento" || lq.Contains("financiam") || lq.Contains("fiao") || lq.Contains("cuota"))
+            {
+                reply = "💳 <b>Financiamiento Fiao:</b><br/>• Inicial desde el <b>20%</b> del precio<br/>• Plazos: 3, 6 o 12 meses<br/>• Cuotas quincenales o mensuales<br/>• Aprobación inmediata con tu cédula<br/>• Sin historial crediticio negativo<br/><br/>👉 Usa la <a href='/cotizador' style='color:var(--sage-300);font-weight:700;'>Calculadora de Cuotas →</a>";
+            }
+            else if (lq == "tradein" || lq.Contains("trade") || lq.Contains("cambio") || lq.Contains("usado"))
+            {
+                reply = "🔄 <b>Trade-In Prodigio:</b><br/>Recibimos tu celular usado como parte de pago.<br/><br/>💰 <b>Bono adicional:</b> +$2,000 RD$ sobre la tasación de mercado.<br/><br/>Marcas aceptadas: Apple, Samsung, Xiaomi, Motorola y más.<br/><br/>Escríbenos para valuar tu equipo: <a href='https://wa.me/18095550199?text=Hola,%20quiero%20hacer%20Trade-In' target='_blank' style='color:#25D366;font-weight:700;'>WhatsApp →</a>";
+            }
+            else if (lq == "garantia" || lq.Contains("garantia") || lq.Contains("garantía"))
+            {
+                reply = "🛡️ <b>Garantía Escrita de 12 Meses:</b><br/>Todos los equipos Grado A+ incluyen:<br/>• Certificado físico de garantía<br/>• Cobertura en hardware y software<br/>• Servicio técnico en tienda sin costo<br/>• Sin letra pequeña ni cargos ocultos<br/><br/>Garantía válida en nuestra tienda de Santo Domingo.";
+            }
+            else if (lq == "asesor" || lq.Contains("asesor") || lq.Contains("humano") || lq.Contains("persona") || lq.Contains("whatsapp"))
+            {
+                reply = "👤 <b>Contactar un Asesor:</b><br/>Nuestro equipo de ventas está disponible Lun–Sáb 9am–8pm.<br/><br/>🟢 <a href='https://wa.me/18095550199?text=Hola%20Prodigio%20Tecnológico,%20necesito%20asesoría' target='_blank' style='color:#25D366;font-weight:700;'>Abrir WhatsApp: +1 (809) 555-0199 →</a>";
+            }
+            else if (System.Text.RegularExpressions.Regex.IsMatch(lq, @"\d{4,}"))
+            {
+                var m = System.Text.RegularExpressions.Regex.Match(lq, @"\d+");
+                if (int.TryParse(m.Value, out int budget))
+                {
+                    if (budget < 15000)
+                        reply = $"📊 <b>Para ${budget:N0} RD$:</b><br/>• 📱 Tecno Spark 20 Pro+ – $13,900 RD$ (Cuota: ~$1,390/mes)<br/>• 📱 Infinix Hot 40 Pro – $11,900 RD$ (Cuota: ~$1,190/mes)<br/><br/>👉 <a href='/tienda' style='color:var(--sage-300);font-weight:700;'>Ver todos los equipos →</a>";
+                    else if (budget < 35000)
+                        reply = $"📊 <b>Para ${budget:N0} RD$:</b><br/>• 📱 iPhone 13 (128GB) – $29,500 RD$ (Cuota: ~$2,950/mes)<br/>• 📱 Samsung Galaxy S23 FE – $28,900 RD$ (Cuota: ~$2,890/mes)<br/>• 📱 Tecno Camon 30 Pro 5G – $18,500 RD$<br/><br/>👉 <a href='/tienda' style='color:var(--sage-300);font-weight:700;'>Ver todos los equipos →</a>";
+                    else
+                        reply = $"📊 <b>Para ${budget:N0} RD$:</b><br/>• 📱 iPhone 15 Pro Max (256GB) – $62,500 RD$ (Cuota: ~$6,250/mes)<br/>• 📱 Samsung Galaxy S24 Ultra – $68,000 RD$<br/>• 📱 iPhone 14 Pro – $44,900 RD$<br/><br/>👉 <a href='/tienda' style='color:var(--sage-300);font-weight:700;'>Ver todos los equipos →</a>";
+                }
                 else
-                    reply = $"📊 <b>Para ${budget:N0} RD$:</b><br/>• 📱 iPhone 15 Pro Max (256GB) – $62,500 RD$ (Cuota: ~$6,250/mes)<br/>• 📱 Samsung Galaxy S24 Ultra – $68,000 RD$<br/>• 📱 iPhone 14 Pro – $44,900 RD$<br/><br/>👉 <a href='/tienda' style='color:var(--sage-300);font-weight:700;'>Ver todos los equipos →</a>";
+                    reply = "Por favor escribe tu presupuesto en pesos RD (ej: <i>25000</i>, <i>45000</i>) para que pueda recomendarte equipos.";
             }
             else
-                reply = "Por favor escribe tu presupuesto en pesos RD (ej: <i>25000</i>, <i>45000</i>) para que pueda recomendarte equipos.";
-        }
-        else
-        {
-            reply = "Entendido. Para darte la mejor asesoría puedo ayudarte a:<br/>• Buscar un equipo por presupuesto (escríbelo en pesos)<br/>• Explicar el Financiamiento Fiao<br/>• Estimar tu Trade-In<br/>• Conectar con un asesor por <a href='https://wa.me/18095550199' target='_blank' style='color:#25D366;font-weight:700;'>WhatsApp →</a>";
-        }
+            {
+                reply = string.IsNullOrWhiteSpace(GroqApiKey)
+                    ? "La API de Groq no está configurada. Puedes escribir al WhatsApp: <a href='https://wa.me/18095550199' target='_blank' style='color:#25D366;font-weight:700;'>WhatsApp Prodigio →</a>"
+                    : await GetGroqReply(q);
+            }
 
-        msgs.Add(new Msg { IsUser = false, Text = reply });
+            msgs.Add(new Msg { IsUser = false, Text = reply });
+        }
+        finally
+        {
+            isThinking = false;
+        }
+    }
+
+    private async Task<string> GetGroqReply(string question)
+    {
+        try
+        {
+            var payload = new
+            {
+                model = GroqModel,
+                messages = new[]
+                {
+                    new { role = "system", content = "Eres PT Bot, asistente virtual de Prodigio Tecnológico. Responde en español, con tono amable y claro. Habla sobre venta de celulares, financiamiento Fiao, garantías, trade-in y atención al cliente. Mantén respuestas cortas, útiles y amigables." },
+                    new { role = "user", content = question }
+                },
+                temperature = 0.7,
+                max_tokens = 250
+            };
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", GroqApiKey);
+            request.Content = JsonContent.Create(payload);
+
+            using var response = await Http.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return "No pude consultar a Groq en este momento. Para atención inmediata puedes escribir al WhatsApp: <a href='https://wa.me/18095550199' target='_blank' style='color:#25D366;font-weight:700;'>WhatsApp Prodigio →</a>";
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            if (root.TryGetProperty("choices", out var choices) && choices.ValueKind == JsonValueKind.Array && choices.GetArrayLength() > 0)
+            {
+                var firstChoice = choices[0];
+                if (firstChoice.TryGetProperty("message", out var message) &&
+                    message.TryGetProperty("content", out var content) &&
+                    content.ValueKind == JsonValueKind.String)
+                {
+                    return content.GetString() ?? "Gracias por tu mensaje. Estoy listo para ayudarte.";
+                }
+            }
+
+            return "Gracias por tu consulta. Puedo ayudarte con precios, cuotas, garantías y Trade-In.";
+        }
+        catch
+        {
+            return "No pude conectar con la IA en este momento. Puedes contactarnos por WhatsApp: <a href='https://wa.me/18095550199' target='_blank' style='color:#25D366;font-weight:700;'>WhatsApp Prodigio →</a>";
+        }
     }
 }
