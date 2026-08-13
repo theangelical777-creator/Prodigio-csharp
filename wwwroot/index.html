@@ -141,23 +141,7 @@
             doc.save(`Cotizacion_Prodigio_${data.clienteNombre ? data.clienteNombre.replace(/\s+/g, '_') : 'Cliente'}.pdf`);
         };
     </script>
-    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
-    <script>
-        if (window.Blazor) {
-            Blazor.start().catch(function (error) {
-                console.error("Blazor start error:", error);
-                if (error && error.toString().includes("Failed to fetch dynamically imported module")) {
-                    console.log("Stale WebAssembly module detected. Clearing cache and reloading...");
-                    if ('caches' in window) {
-                        caches.keys().then(function (names) {
-                            for (let name of names) caches.delete(name);
-                        });
-                    }
-                    window.location.reload();
-                }
-            });
-        }
-    </script>
+    <script src="_framework/blazor.webassembly.js"></script>
 </body>
 
 </html>
