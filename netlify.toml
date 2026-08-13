@@ -1,4 +1,5 @@
 [build]
+  command = ""
   publish = "publish_output/wwwroot"
 
 [[redirects]]
