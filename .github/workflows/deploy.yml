@@ -1,4 +1,4 @@
-name: Deploy Blazor WASM
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
@@ -24,13 +26,16 @@ jobs:
       - name: Publish Blazor WebAssembly
         run: dotnet publish -c Release -o output
 
-      - name: Ensure SPA fallback and nojekyll
+      - name: Fix base href for GitHub Pages
         run: |
-          cp output/wwwroot/index.html output/wwwroot/404.html || true
+          sed -i 's|<base href="/" />|<base href="/Prodigio-csharp/" />|g' output/wwwroot/index.html
+          cp output/wwwroot/index.html output/wwwroot/404.html
           touch output/wwwroot/.nojekyll
+          echo "/* /index.html 200" > output/wwwroot/_redirects
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: output/wwwroot
           branch: gh-pages
+          clean: true
