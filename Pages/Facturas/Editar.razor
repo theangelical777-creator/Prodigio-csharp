@@ -1,0 +1,237 @@
+@page "/facturas/editar/{Id:int}"
+@inject FacturaService FacturaService
+@inject NavigationManager Navigation
+
+<PageTitle>Editar Factura @(FacturaAEditar?.Numero) - Prodigio Tecnológico</PageTitle>
+
+<div class="section-header">
+    <div class="section-title">
+        <h2>Editar Factura</h2>
+        <p>Modifica los datos del comprobante de facturación</p>
+    </div>
+</div>
+
+@if (FacturaAEditar == null)
+{
+    <div class="card text-center" style="padding: 40px;">
+        <p class="text-muted">Cargando datos de factura...</p>
+    </div>
+}
+else
+{
+    <EditForm Model="@FacturaAEditar" OnValidSubmit="ActualizarFactura">
+        <DataAnnotationsValidator />
+        
+        <div class="card mb-6">
+            <h3 class="fw-800 mb-0 text-accent" style="font-size: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                1. Datos del Cliente
+            </h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nombre del Cliente / Razón Social</label>
+                    <input type="text" @bind-value="FacturaAEditar.Cliente.Nombre" required placeholder="Ej: Juan Pérez" />
+                </div>
+                
+                <div class="form-group">
+                    <label>RNC / Cédula</label>
+                    <input type="text" @bind-value="FacturaAEditar.Cliente.RNC" required placeholder="Ej: 1-31-12345-6" />
+                </div>
+
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" @bind-value="FacturaAEditar.Cliente.Email" placeholder="cliente@correo.com" />
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" @bind-value="FacturaAEditar.Cliente.Telefono" placeholder="809-555-0101" />
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Dirección</label>
+                    <input type="text" @bind-value="FacturaAEditar.Cliente.Direccion" placeholder="Av. Principal #123, Santo Domingo" />
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-6">
+            <h3 class="fw-800 mb-0 text-teal" style="font-size: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                2. Detalles del Comprobante
+            </h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Número de Factura</label>
+                    <input type="text" @bind-value="FacturaAEditar.Numero" readonly style="background: var(--bg-primary); font-weight: bold; color: var(--accent-primary);" />
+                </div>
+
+                <div class="form-group">
+                    <label>Estado de Factura</label>
+                    <select @bind="FacturaAEditar.Estado">
+                        @foreach (var estado in Enum.GetValues<EstadoFactura>())
+                        {
+                            <option value="@estado">@estado</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de Emisión</label>
+                    <input type="date" @bind-value="FacturaAEditar.Fecha" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de Vencimiento</label>
+                    <input type="date" @bind-value="FechaVencimientoTemp" />
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-6">
+            <div class="d-flex align-center" style="justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 20px;">
+                <h3 class="fw-800 mb-0 text-warning" style="font-size: 15px;">
+                    3. Artículos / Servicios de Facturación
+                </h3>
+                <button type="button" class="btn btn-secondary btn-sm" @onclick="AgregarItem">
+                    <i class="ph ph-plus-circle"></i> Agregar Artículo
+                </button>
+            </div>
+
+            <div class="items-editor">
+                <div class="item-row" style="background: rgba(255,255,255,0.02); font-weight: bold; font-size: 11px; text-transform: uppercase; color: var(--text-muted);">
+                    <div>Descripción</div>
+                    <div>Cant.</div>
+                    <div>Precio Unitario</div>
+                    <div style="text-align: right; padding-right: 14px;">Total</div>
+                </div>
+
+                @for (int i = 0; i < FacturaAEditar.Items.Count; i++)
+                {
+                    var idx = i;
+                    <div class="item-row">
+                        <div>
+                            <input type="text" @bind-value="FacturaAEditar.Items[idx].Descripcion" placeholder="Ej: Reparación de pantalla iPhone 13" required />
+                        </div>
+                        <div>
+                            <input type="number" @bind-value="FacturaAEditar.Items[idx].Cantidad" min="1" required />
+                        </div>
+                        <div>
+                            <input type="number" @bind-value="FacturaAEditar.Items[idx].PrecioUnitario" step="0.01" min="0" required />
+                        </div>
+                        <div class="d-flex align-center gap-3" style="justify-content: flex-end;">
+                            <span class="item-subtotal">RD$ @FacturaAEditar.Items[idx].Subtotal.ToString("N2")</span>
+                            <button type="button" class="btn btn-danger btn-icon btn-sm" title="Quitar" @onclick="() => QuitarItem(idx)">
+                                <i class="ph ph-trash-simple"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="totals-section">
+                <div class="totals-box">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span>RD$ @FacturaAEditar.Subtotal.ToString("N2")</span>
+                    </div>
+                    <div class="total-row">
+                        <span>ITBIS (18%):</span>
+                        <span>RD$ @FacturaAEditar.ITBIS.ToString("N2")</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Total General:</span>
+                        <span>RD$ @FacturaAEditar.Total.ToString("N2")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="form-group full-width">
+                <label>Notas / Comentarios Internos</label>
+                <textarea @bind="FacturaAEditar.Notas" placeholder="Escribe notas de la factura aquí..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" @onclick="VolverAListado">Cancelar</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="ph ph-floppy-disk-back"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Factura? FacturaAEditar { get; set; }
+    private DateTime? FechaVencimientoTemp { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var original = FacturaService.GetById(Id);
+        if (original == null)
+        {
+            Navigation.NavigateTo("facturas");
+            return;
+        }
+
+        // Clonar la factura para evitar que modifique en tiempo real si cancelamos la edición
+        FacturaAEditar = new Factura
+        {
+            Id = original.Id,
+            Numero = original.Numero,
+            Fecha = original.Fecha,
+            FechaVencimiento = original.FechaVencimiento,
+            Estado = original.Estado,
+            Notas = original.Notas,
+            Cliente = new Cliente
+            {
+                Id = original.Cliente.Id,
+                Nombre = original.Cliente.Nombre,
+                Email = original.Cliente.Email,
+                Telefono = original.Cliente.Telefono,
+                Direccion = original.Cliente.Direccion,
+                RNC = original.Cliente.RNC
+            },
+            Items = original.Items.Select(i => new ItemFactura
+            {
+                Id = i.Id,
+                Descripcion = i.Descripcion,
+                Cantidad = i.Cantidad,
+                PrecioUnitario = i.PrecioUnitario
+            }).ToList()
+        };
+
+        FechaVencimientoTemp = FacturaAEditar.FechaVencimiento;
+    }
+
+    private void AgregarItem()
+    {
+        FacturaAEditar?.Items.Add(new ItemFactura { Descripcion = "", Cantidad = 1, PrecioUnitario = 0 });
+    }
+
+    private void QuitarItem(int index)
+    {
+        if (FacturaAEditar != null && FacturaAEditar.Items.Count > 1)
+        {
+            FacturaAEditar.Items.RemoveAt(index);
+        }
+    }
+
+    private void VolverAListado()
+    {
+        Navigation.NavigateTo("facturas");
+    }
+
+    private void ActualizarFactura()
+    {
+        if (FacturaAEditar != null)
+        {
+            FacturaAEditar.FechaVencimiento = FechaVencimientoTemp;
+            FacturaService.Actualizar(FacturaAEditar);
+        }
+        Navigation.NavigateTo("facturas");
+    }
+}

@@ -1,0 +1,207 @@
+@page "/facturas"
+@inject FacturaService FacturaService
+@inject NavigationManager Navigation
+
+<PageTitle>Módulo de Facturación - Prodigio Tecnológico</PageTitle>
+
+<div class="section-header">
+    <div class="section-title">
+        <h2>Panel de Facturación</h2>
+        <p>Historial y control de comprobantes fiscales y ordinarios</p>
+    </div>
+    <div>
+        <button class="btn btn-primary" @onclick="CrearNuevaFactura">
+            <i class="ph ph-plus-circle"></i> Nueva Factura
+        </button>
+    </div>
+</div>
+
+<!-- Stats Dashboard -->
+<div class="stats-grid">
+    <div class="stat-card purple">
+        <div class="stat-icon purple">
+            <i class="ph ph-receipt"></i>
+        </div>
+        <div class="stat-info">
+            <p>Total Facturas</p>
+            <h3>@FacturaService.TotalFacturas</h3>
+        </div>
+    </div>
+
+    <div class="stat-card green">
+        <div class="stat-icon green">
+            <i class="ph ph-check-circle"></i>
+        </div>
+        <div class="stat-info">
+            <p>Cobrado (RD$)</p>
+            <h3>@FacturaService.TotalCobrado.ToString("N2")</h3>
+        </div>
+    </div>
+
+    <div class="stat-card amber">
+        <div class="stat-icon amber">
+            <i class="ph ph-clock"></i>
+        </div>
+        <div class="stat-info">
+            <p>Pendiente (RD$)</p>
+            <h3>@FacturaService.TotalPendiente.ToString("N2")</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Table Header Actions -->
+<div class="table-container">
+    <div class="table-header">
+        <div class="search-bar">
+            <span class="ph ph-magnifying-glass"></span>
+            <input type="text" placeholder="Buscar por cliente o número..." @bind="SearchQuery" @bind:event="oninput" />
+        </div>
+        <div class="d-flex gap-2">
+            <select @bind="EstadoFilter" style="width: auto; padding: 6px 12px; font-size: 13px;">
+                <option value="Todos">Todos los Estados</option>
+                <option value="Pagada">Pagadas</option>
+                <option value="Pendiente">Pendientes</option>
+                <option value="Cancelada">Canceladas</option>
+            </select>
+        </div>
+    </div>
+
+    @if (FilteredFacturas.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="empty-icon text-muted">
+                <i class="ph ph-file-text"></i>
+            </div>
+            <h3>No se encontraron facturas</h3>
+            <p>Intenta cambiar los filtros o registra una nueva factura en el sistema.</p>
+            <button class="btn btn-secondary btn-sm" @onclick="CrearNuevaFactura">
+                Crear Factura
+            </button>
+        </div>
+    }
+    else
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th style="text-align: right;">Total</th>
+                    <th style="text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var factura in FilteredFacturas)
+                {
+                    <tr>
+                        <td><strong>@factura.Numero</strong></td>
+                        <td>
+                            <div>@factura.Cliente.Nombre</div>
+                            <span class="text-muted" style="font-size: 11.5px;">RNC: @factura.Cliente.RNC</span>
+                        </td>
+                        <td>@factura.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <span class="badge @GetBadgeClass(factura.Estado)">
+                                <span class="pulse-dot">•</span> @factura.Estado
+                            </span>
+                        </td>
+                        <td style="text-align: right; font-weight: 700; color: var(--text-primary)">
+                            RD$ @factura.Total.ToString("N2")
+                        </td>
+                        <td style="text-align: center;">
+                            <div class="d-flex gap-2" style="justify-content: center;">
+                                <button class="btn btn-secondary btn-icon" title="Ver Detalle" @onclick="() => VerDetalle(factura.Id)">
+                                    <i class="ph ph-eye"></i>
+                                </button>
+                                <button class="btn btn-secondary btn-icon" title="Editar" @onclick="() => EditarFactura(factura.Id)">
+                                    <i class="ph ph-pencil"></i>
+                                </button>
+                                <button class="btn btn-danger btn-icon" title="Eliminar" @onclick="() => SolicitarEliminar(factura.Id)">
+                                    <i class="ph ph-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<ProdigioApp.Shared.ConfirmDialog 
+    Visible="MostrarConfirmacion" 
+    Title="¿Eliminar Factura?" 
+    Message="¿Está seguro de que desea eliminar permanentemente esta factura? Esta operación afectará sus reportes financieros."
+    OnConfirm="ConfirmarEliminacion" 
+    OnCancel="CancelarEliminacion" />
+
+@code {
+    private string SearchQuery { get; set; } = string.Empty;
+    private string EstadoFilter { get; set; } = "Todos";
+    private bool MostrarConfirmacion { get; set; } = false;
+    private int FacturaIdAEliminar { get; set; }
+
+    private List<Factura> FilteredFacturas
+    {
+        get
+        {
+            var facturas = FacturaService.GetAll();
+
+            if (!string.IsNullOrEmpty(SearchQuery))
+            {
+                facturas = facturas.Where(f => 
+                    f.Numero.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase) || 
+                    f.Cliente.Nombre.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (EstadoFilter != "Todos")
+            {
+                facturas = facturas.Where(f => f.Estado.ToString() == EstadoFilter).ToList();
+            }
+
+            return facturas;
+        }
+    }
+
+    private string GetBadgeClass(EstadoFactura estado) => estado switch
+    {
+        EstadoFactura.Pagada => "badge-success",
+        EstadoFactura.Pendiente => "badge-warning",
+        EstadoFactura.Cancelada => "badge-danger",
+        _ => "badge-purple"
+    };
+
+    private void CrearNuevaFactura()
+    {
+        Navigation.NavigateTo("facturas/crear");
+    }
+
+    private void VerDetalle(int id)
+    {
+        Navigation.NavigateTo($"facturas/detalle/{id}");
+    }
+
+    private void EditarFactura(int id)
+    {
+        Navigation.NavigateTo($"facturas/editar/{id}");
+    }
+
+    private void SolicitarEliminar(int id)
+    {
+        FacturaIdAEliminar = id;
+        MostrarConfirmacion = true;
+    }
+
+    private void ConfirmarEliminacion()
+    {
+        FacturaService.Eliminar(FacturaIdAEliminar);
+        MostrarConfirmacion = false;
+    }
+
+    private void CancelarEliminacion()
+    {
+        MostrarConfirmacion = false;
+    }
+}

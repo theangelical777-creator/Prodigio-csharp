@@ -1,0 +1,285 @@
+@page "/vender"
+@inject ProdigioDatabaseService DbService
+
+<PageTitle>Venta de Equipos & Tasación Online - Prodigio Tecnológico</PageTitle>
+
+<div class="container-fluid padding-space">
+    <div class="section-header text-center">
+        <h1 class="gradient-title">Vende tu Celular o Haz Trade-In</h1>
+        <p class="section-subtitle center">Te compramos tu smartphone usado al instante o lo tomamos a cuenta para uno nuevo con la mejor tasación del mercado.</p>
+    </div>
+
+    <!-- Banner Celulares Usados -->
+    <div class="trade-banner-card mb-5">
+        <div class="trade-banner-img">
+            <img src="/used_phones.png" alt="Celulares Usados Comercializados" class="rounded-banner-img" />
+        </div>
+        <div class="trade-banner-text">
+            <h2>Compramos Celulares de Todas las Marcas Principales</h2>
+            <p>Aceptamos equipos en excelente estado, seminuevos o con pequeños detalles estéticos. Consulta nuestra tabla estimada de compra o solicita una tasación especializada.</p>
+            <div class="brands-list-badges">
+                <span class="brand-pill">Apple iPhone</span>
+                <span class="brand-pill">Samsung</span>
+                <span class="brand-pill">Xiaomi</span>
+                <span class="brand-pill">Motorola</span>
+                <span class="brand-pill">Google Pixel</span>
+                <span class="brand-pill">OnePlus</span>
+                <span class="brand-pill">Honor</span>
+                <span class="brand-pill">Realme</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Precios Estimados por Marca -->
+    <div class="table-container-card mb-5">
+        <div class="table-card-header">
+            <h3><i class="ph ph-currency-dollar"></i> Precios Aproximados de Compra por Estado (RD$)</h3>
+            <span class="sub-info">*Valores sugeridos según mercado de segunda mano. La tasación final depende de la evaluación física.</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Marca</th>
+                        <th>Modelo Referencia</th>
+                        <th>Como Nuevo / Sellado</th>
+                        <th>Buen Estado (Grado A)</th>
+                        <th>Detalle Estético</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Apple</strong></td>
+                        <td>iPhone 14 Pro / Pro Max</td>
+                        <td>$38,000 - $46,000 RD$</td>
+                        <td>$32,000 - $37,000 RD$</td>
+                        <td>$25,000 - $30,000 RD$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Apple</strong></td>
+                        <td>iPhone 13 / 13 Pro</td>
+                        <td>$24,000 - $30,000 RD$</td>
+                        <td>$19,000 - $23,000 RD$</td>
+                        <td>$15,000 - $18,000 RD$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Samsung</strong></td>
+                        <td>Galaxy S23 Ultra / S24 Ultra</td>
+                        <td>$45,000 - $55,000 RD$</td>
+                        <td>$38,000 - $44,000 RD$</td>
+                        <td>$30,000 - $36,000 RD$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Samsung</strong></td>
+                        <td>Galaxy S22 5G / S21 Ultra</td>
+                        <td>$22,000 - $28,000 RD$</td>
+                        <td>$17,000 - $21,000 RD$</td>
+                        <td>$12,000 - $16,000 RD$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Xiaomi</strong></td>
+                        <td>Xiaomi 13 Pro / 13T</td>
+                        <td>$22,000 - $28,000 RD$</td>
+                        <td>$16,000 - $21,000 RD$</td>
+                        <td>$11,000 - $15,000 RD$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Motorola</strong></td>
+                        <td>Edge 40 / Edge 30 Ultra</td>
+                        <td>$18,000 - $24,000 RD$</td>
+                        <td>$13,000 - $17,000 RD$</td>
+                        <td>$9,500 - $12,000 RD$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Google Pixel</strong></td>
+                        <td>Pixel 7 Pro / Pixel 8</td>
+                        <td>$26,000 - $32,000 RD$</td>
+                        <td>$20,000 - $25,000 RD$</td>
+                        <td>$14,000 - $18,000 RD$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OnePlus</strong></td>
+                        <td>OnePlus 11 / 10 Pro</td>
+                        <td>$23,000 - $29,000 RD$</td>
+                        <td>$17,000 - $22,000 RD$</td>
+                        <td>$12,000 - $16,000 RD$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Honor</strong></td>
+                        <td>Honor Magic5 Pro / 90 5G</td>
+                        <td>$25,000 - $31,000 RD$</td>
+                        <td>$18,000 - $23,000 RD$</td>
+                        <td>$13,000 - $17,000 RD$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Realme</strong></td>
+                        <td>Realme GT3 / 11 Pro+</td>
+                        <td>$16,000 - $21,000 RD$</td>
+                        <td>$12,000 - $15,000 RD$</td>
+                        <td>$8,500 - $11,000 RD$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Módulo de Tasación Online & Pasarela de Pagos -->
+    <div class="tasacion-checkout-card">
+        <div class="card-title-header">
+            <h2><i class="ph ph-shield-check"></i> Solicitud de Tasación Especializada en Línea</h2>
+            <p>Completa los datos de tu equipo y realiza el pago simbólico de la tasa de inspección técnica ($500 RD$). El monto pagado será reembolsado o acreditado a favor de tu compra.</p>
+        </div>
+
+        @if (!pagoExitoso)
+        {
+            <div class="checkout-grid">
+                <!-- Datos del Dispositivo -->
+                <div class="checkout-form-side">
+                    <h4>1. Datos de tu Dispositivo</h4>
+                    <div class="form-group mb-3">
+                        <label>Marca:</label>
+                        <select class="form-control-custom" @bind="tasacionMarca">
+                            <option value="Apple">Apple iPhone</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Xiaomi">Xiaomi</option>
+                            <option value="Motorola">Motorola</option>
+                            <option value="Google">Google Pixel</option>
+                            <option value="OnePlus">OnePlus</option>
+                            <option value="Honor">Honor</option>
+                            <option value="Realme">Realme</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Modelo exacto y Capacidad:</label>
+                        <input type="text" class="form-control-custom" placeholder="Ej: iPhone 13 Pro 256GB" @bind="tasacionModelo" />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Estado del Equipo:</label>
+                        <select class="form-control-custom" @bind="tasacionEstado">
+                            <option value="Como Nuevo">Como Nuevo (Sin rayas)</option>
+                            <option value="Buen Estado">Buen Estado (Uso normal)</option>
+                            <option value="Detalle Estetico">Detalle Estético / Rayas</option>
+                            <option value="Pantalla Agrietada">Pantalla Agrietada / Detalle funcional</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Tu Nombre y Teléfono:</label>
+                        <input type="text" class="form-control-custom mb-2" placeholder="Tu Nombre completo" @bind="clienteNombre" />
+                        <input type="text" class="form-control-custom" placeholder="WhatsApp / Teléfono de contacto" @bind="clienteTelefono" />
+                    </div>
+                </div>
+
+                <!-- Pasarela de Pagos -->
+                <div class="checkout-payment-side">
+                    <h4>2. Método de Pago ($500 RD$)</h4>
+                    <div class="payment-methods-tabs mb-3">
+                        <button class="pay-tab @(metodoPago == "Tarjeta" ? "active" : "")" @onclick='() => metodoPago = "Tarjeta"'>
+                            <i class="ph ph-credit-card"></i> Tarjeta Crédito/Débito
+                        </button>
+                        <button class="pay-tab @(metodoPago == "Transferencia" ? "active" : "")" @onclick='() => metodoPago = "Transferencia"'>
+                            <i class="ph ph-bank"></i> Transferencia
+                        </button>
+                        <button class="pay-tab @(metodoPago == "Billetera" ? "active" : "")" @onclick='() => metodoPago = "Billetera"'>
+                            <i class="ph ph-wallet"></i> Billetera Digital
+                        </button>
+                    </div>
+
+                    @if (metodoPago == "Tarjeta")
+                    {
+                        <div class="payment-fields fade-in">
+                            <input type="text" class="form-control-custom mb-2" placeholder="Número de Tarjeta (4532...)" />
+                            <div class="dual-inputs">
+                                <input type="text" class="form-control-custom" placeholder="MM/AA" />
+                                <input type="password" class="form-control-custom" placeholder="CVC / CVV" />
+                            </div>
+                        </div>
+                    }
+                    else if (metodoPago == "Transferencia")
+                    {
+                        <div class="payment-fields fade-in p-3 bg-dark-card rounded">
+                            <p class="mb-1"><strong>Banco Popular:</strong> 794-019283-1</p>
+                            <p class="mb-1"><strong>Banreservas:</strong> 960-482910-4</p>
+                            <p class="mb-0"><strong>Titular:</strong> Prodigio Tecnológico SRL</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="payment-fields fade-in p-3 bg-dark-card rounded">
+                            <p class="mb-1"><strong>Billetera PayPal / Azul:</strong> pagos@prodigiotecnologico.com</p>
+                        </div>
+                    }
+
+                    <button class="btn btn-primary btn-block mt-4" @onclick="ProcesarPago" disabled="@procesando">
+                        @if (procesando)
+                        {
+                            <span><i class="ph ph-spinner spinner"></i> Procesando Pago...</span>
+                        }
+                        else
+                        {
+                            <span><i class="ph ph-lock"></i> Confirmar Pago de $500 RD$</span>
+                        }
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="comprobante-card fade-in text-center p-4">
+                <div class="success-icon"><i class="ph ph-check-circle"></i></div>
+                <h3 class="text-success">¡Pago Confirmado Exitosamente!</h3>
+                <p>Se ha generado tu comprobante de tasación con la orden <strong>#TAS-@folioTransaccion</strong>.</p>
+                
+                <div class="receipt-summary my-4 p-3 bg-dark-card rounded text-left">
+                    <p><strong>Cliente:</strong> @clienteNombre</p>
+                    <p><strong>Equipo a Tasar:</strong> @tasacionMarca @tasacionModelo (@tasacionEstado)</p>
+                    <p><strong>Monto Pagado:</strong> $500.00 RD$ (Acreditable a tu venta)</p>
+                    <p><strong>Método de Pago:</strong> @metodoPago</p>
+                    <p class="text-accent mb-0"><strong>Estado:</strong> Asignado a Especialista Técnico Senior</p>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="ph ph-info"></i> Nuestro especialista se comunicará contigo vía WhatsApp en menos de 15 minutos para agilizar la entrega o inspección del dispositivo.
+                </div>
+
+                <button class="btn btn-secondary mt-3" @onclick='() => pagoExitoso = false'>Realizar Otra Tasación</button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string tasacionMarca = "Apple";
+    private string tasacionModelo = "";
+    private string tasacionEstado = "Como Nuevo";
+    private string clienteNombre = "";
+    private string clienteTelefono = "";
+    private string metodoPago = "Tarjeta";
+    private bool procesando = false;
+    private bool pagoExitoso = false;
+    private int folioTransaccion = 0;
+
+    private async Task ProcesarPago()
+    {
+        procesando = true;
+        await Task.Delay(1200); // Simulación de pasarela de pago segura
+        procesando = false;
+        
+        var pago = new Models.TasacionPago
+        {
+            ClienteNombre = string.IsNullOrWhiteSpace(clienteNombre) ? "Cliente Registrado" : clienteNombre,
+            ClienteTelefono = clienteTelefono,
+            Marca = tasacionMarca,
+            Modelo = tasacionModelo,
+            EstadoEquipo = tasacionEstado,
+            MetodoPago = metodoPago
+        };
+
+        await DbService.RegistrarTasacionPagoAsync(pago);
+        folioTransaccion = pago.Id * 1000 + Random.Shared.Next(100, 999);
+        pagoExitoso = true;
+    }
+}

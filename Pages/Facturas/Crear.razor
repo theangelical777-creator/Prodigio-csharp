@@ -1,0 +1,200 @@
+@page "/facturas/crear"
+@inject FacturaService FacturaService
+@inject NavigationManager Navigation
+
+<PageTitle>Nueva Factura - Prodigio Tecnológico</PageTitle>
+
+<div class="section-header">
+    <div class="section-title">
+        <h2>Crear Nueva Factura</h2>
+        <p>Registra una transacción comercial de productos o servicios</p>
+    </div>
+</div>
+
+<EditForm Model="@NuevaFactura" OnValidSubmit="GuardarFactura">
+    <DataAnnotationsValidator />
+    
+    <div class="card mb-6">
+        <h3 class="fw-800 mb-0 text-accent" style="font-size: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+            1. Datos del Cliente
+        </h3>
+        
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nombre del Cliente / Razón Social</label>
+                <input type="text" @bind-value="NuevaFactura.Cliente.Nombre" required placeholder="Ej: Juan Pérez o Tech Solutions SRL" />
+            </div>
+            
+            <div class="form-group">
+                <label>RNC / Cédula</label>
+                <input type="text" @bind-value="NuevaFactura.Cliente.RNC" required placeholder="Ej: 1-31-12345-6" />
+            </div>
+
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" @bind-value="NuevaFactura.Cliente.Email" placeholder="cliente@correo.com" />
+            </div>
+
+            <div class="form-group">
+                <label>Teléfono</label>
+                <input type="text" @bind-value="NuevaFactura.Cliente.Telefono" placeholder="809-555-0101" />
+            </div>
+
+            <div class="form-group full-width">
+                <label>Dirección</label>
+                <input type="text" @bind-value="NuevaFactura.Cliente.Direccion" placeholder="Av. Principal #123, Santo Domingo" />
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-6">
+        <h3 class="fw-800 mb-0 text-teal" style="font-size: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+            2. Detalles del Comprobante
+        </h3>
+        
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Número de Factura</label>
+                <input type="text" @bind-value="NuevaFactura.Numero" readonly style="background: var(--bg-primary); font-weight: bold; color: var(--accent-primary);" />
+            </div>
+
+            <div class="form-group">
+                <label>Estado de Factura</label>
+                <select @bind="NuevaFactura.Estado">
+                    @foreach (var estado in Enum.GetValues<EstadoFactura>())
+                    {
+                        <option value="@estado">@estado</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Fecha de Emisión</label>
+                <input type="date" @bind-value="NuevaFactura.Fecha" required />
+            </div>
+
+            <div class="form-group">
+                <label>Fecha de Vencimiento</label>
+                <input type="date" @bind-value="FechaVencimientoTemp" />
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-6">
+        <div class="d-flex align-center" style="justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 20px;">
+            <h3 class="fw-800 mb-0 text-warning" style="font-size: 15px;">
+                3. Artículos / Servicios de Facturación
+            </h3>
+            <button type="button" class="btn btn-secondary btn-sm" @onclick="AgregarItem">
+                <i class="ph ph-plus-circle"></i> Agregar Artículo
+            </button>
+        </div>
+
+        <div class="items-editor">
+            <div class="item-row" style="background: rgba(255,255,255,0.02); font-weight: bold; font-size: 11px; text-transform: uppercase; color: var(--text-muted);">
+                <div>Descripción</div>
+                <div>Cant.</div>
+                <div>Precio Unitario</div>
+                <div style="text-align: right; padding-right: 14px;">Total</div>
+            </div>
+
+            @for (int i = 0; i < NuevaFactura.Items.Count; i++)
+            {
+                var idx = i;
+                <div class="item-row">
+                    <div>
+                        <input type="text" @bind-value="NuevaFactura.Items[idx].Descripcion" placeholder="Ej: Reparación de pantalla iPhone 13" required />
+                    </div>
+                    <div>
+                        <input type="number" @bind-value="NuevaFactura.Items[idx].Cantidad" min="1" required />
+                    </div>
+                    <div>
+                        <input type="number" @bind-value="NuevaFactura.Items[idx].PrecioUnitario" step="0.01" min="0" required />
+                    </div>
+                    <div class="d-flex align-center gap-3" style="justify-content: flex-end;">
+                        <span class="item-subtotal">RD$ @NuevaFactura.Items[idx].Subtotal.ToString("N2")</span>
+                        <button type="button" class="btn btn-danger btn-icon btn-sm" title="Quitar" @onclick="() => QuitarItem(idx)">
+                            <i class="ph ph-trash-simple"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="totals-section">
+            <div class="totals-box">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span>RD$ @NuevaFactura.Subtotal.ToString("N2")</span>
+                </div>
+                <div class="total-row">
+                    <span>ITBIS (18%):</span>
+                    <span>RD$ @NuevaFactura.ITBIS.ToString("N2")</span>
+                </div>
+                <div class="total-row">
+                    <span>Total General:</span>
+                    <span>RD$ @NuevaFactura.Total.ToString("N2")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="form-group full-width">
+            <label>Notas / Comentarios Internos</label>
+            <textarea @bind="NuevaFactura.Notas" placeholder="Escribe notas de la factura aquí..."></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" @onclick="VolverAListado">Cancelar</button>
+            <button type="submit" class="btn btn-success">
+                <i class="ph ph-floppy-disk"></i> Guardar Factura
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private Factura NuevaFactura { get; set; } = new();
+    private DateTime? FechaVencimientoTemp { get; set; }
+
+    protected override void OnInitialized()
+    {
+        NuevaFactura.Numero = FacturaService.GenerarNumero();
+        NuevaFactura.Fecha = DateTime.Today;
+        FechaVencimientoTemp = DateTime.Today.AddDays(30);
+        NuevaFactura.Items.Add(new ItemFactura { Descripcion = "", Cantidad = 1, PrecioUnitario = 0 });
+    }
+
+    private void AgregarItem()
+    {
+        NuevaFactura.Items.Add(new ItemFactura { Descripcion = "", Cantidad = 1, PrecioUnitario = 0 });
+    }
+
+    private void QuitarItem(int index)
+    {
+        if (NuevaFactura.Items.Count > 1)
+        {
+            NuevaFactura.Items.RemoveAt(index);
+        }
+    }
+
+    private void VolverAListado()
+    {
+        Navigation.NavigateTo("facturas");
+    }
+
+    private void GuardarFactura()
+    {
+        NuevaFactura.FechaVencimiento = FechaVencimientoTemp;
+        
+        // Validar que al menos un item tenga descripción
+        if (NuevaFactura.Items.Any(i => string.IsNullOrWhiteSpace(i.Descripcion)))
+        {
+            // Podríamos mostrar una validación, pero EditForm se encargará del HTML5 required.
+        }
+
+        FacturaService.Crear(NuevaFactura);
+        Navigation.NavigateTo("facturas");
+    }
+}

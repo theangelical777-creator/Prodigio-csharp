@@ -1,0 +1,67 @@
+@inject NavigationManager NavManager
+
+<!-- PROMO STRIP -->
+<div class="promo-strip">
+    <p class="promo-strip-txt">
+        🎉 <strong>PRODIGIO TECNOLÓGICO</strong> · Garantía 12 meses · Financiamiento Fiao desde 20% de inicial · Envíos gratis a todo el país
+    </p>
+    <a href="/tienda" class="promo-strip-cta">Ver Ofertas →</a>
+</div>
+
+<!-- STICKY NAVBAR -->
+<nav class="navbar">
+    <div class="navbar-inner">
+
+        <!-- Brand Logo -->
+        <a href="" class="navbar-brand">
+            <img src="/images/logo.png" alt="Prodigio Tecnológico Logo" class="navbar-brand-logo" style="width:40px;height:40px;border-radius:10px;object-fit:cover;" />
+            <div class="navbar-brand-text">
+                <span class="navbar-brand-name" style="font-size:16px;">Prodigio Tecnológico</span>
+                <span class="navbar-brand-slogan">Tienda de Telefonía Celular</span>
+            </div>
+        </a>
+
+        <!-- Centered Menu Links -->
+        <div class="navbar-links">
+            <NavLink href="" Match="NavLinkMatch.All" class="nav-link" @onclick="CloseMenu"><i class="ph ph-house"></i> Inicio</NavLink>
+            <NavLink href="/tienda" class="nav-link" @onclick="CloseMenu">Tienda</NavLink>
+            <NavLink href="/cotizador" class="nav-link" @onclick="CloseMenu">Calculadora / Cotización</NavLink>
+            <NavLink href="/contacto" class="nav-link" @onclick="CloseMenu">Contactos</NavLink>
+        </div>
+
+        <!-- Action Buttons (right side) -->
+        <div class="navbar-actions">
+            <a href="/login" class="btn-nav-outline">
+                <i class="ph ph-user"></i> Acceder
+            </a>
+            <a href="/tienda" class="btn-nav-primary">
+                <i class="ph ph-shopping-cart"></i> Mi Tienda
+            </a>
+            <button class="mobile-toggle" @onclick="ToggleMenu" aria-label="Menú">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Nav Dropdown -->
+<div class="mobile-nav @(menuOpen ? "open" : "")">
+    <NavLink href="" Match="NavLinkMatch.All" class="nav-link" @onclick="CloseMenu"><i class="ph ph-house"></i> Inicio</NavLink>
+    <NavLink href="/tienda" class="nav-link" @onclick="CloseMenu">Tienda</NavLink>
+    <NavLink href="/cotizador" class="nav-link" @onclick="CloseMenu">Calculadora / Cotización</NavLink>
+    <NavLink href="/contacto" class="nav-link" @onclick="CloseMenu">Contactos</NavLink>
+    <div class="flex gap-3 mt-3">
+        <a href="/login" class="btn-nav-outline btn-sm">
+            <i class="ph ph-user"></i> Acceder
+        </a>
+        <a href="/tienda" class="btn-nav-primary btn-sm">
+            <i class="ph ph-shopping-cart"></i> Mi Tienda
+        </a>
+    </div>
+</div>
+
+@code {
+    private bool menuOpen = false;
+    private void ToggleMenu() => menuOpen = !menuOpen;
+    private void CloseMenu()  => menuOpen = false;
+}

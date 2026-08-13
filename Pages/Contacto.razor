@@ -1,0 +1,187 @@
+@page "/contacto"
+@page "/contactar"
+
+<PageTitle>Contacto y Ubicación – Prodigio Tecnológico</PageTitle>
+
+<!-- PAGE HERO -->
+<div class="catalog-hero-band page-offset">
+    <div class="catalog-hero-inner">
+        <div>
+            <h1 class="catalog-hero-title">Contáctanos</h1>
+            <p class="catalog-hero-sub">Estamos aquí para ayudarte. Respuesta en menos de 30 minutos por WhatsApp.</p>
+        </div>
+        <div class="catalog-hero-pills">
+            <span class="catalog-pill">📍 Santo Domingo, RD</span>
+            <span class="catalog-pill">🕐 Lun–Sáb 9am–8pm</span>
+        </div>
+    </div>
+</div>
+
+<section class="page-section" style="background:var(--bg-page);">
+    <div class="section-inner">
+
+        <div class="contact-grid">
+
+            <!-- Left: Contact Info -->
+            <div>
+                <span class="section-label">Información de Contacto</span>
+                <h2 class="section-title mb-8" style="font-size:1.5rem;">Hablemos sin compromiso</h2>
+
+                <div class="contact-info-card">
+                    <div class="contact-icon icon-blue"><i class="ph ph-phone"></i></div>
+                    <div class="contact-card-body">
+                        <h4>Teléfono / WhatsApp</h4>
+                        <p>+1 (809) 555-0199 · Atención Lun–Sáb 9am–8pm</p>
+                        <a href="https://wa.me/18095550199?text=Hola%20Prodigio%20Tecnológico,%20necesito%20información" target="_blank" class="cta-link">
+                            <i class="ph ph-whatsapp-logo"></i> Abrir WhatsApp →
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-info-card">
+                    <div class="contact-icon icon-mint"><i class="ph ph-envelope"></i></div>
+                    <div class="contact-card-body">
+                        <h4>Correo Electrónico</h4>
+                        <p>Respondemos en menos de 4 horas hábiles.</p>
+                        <a href="mailto:soporte@prodigiotecnologico.com" class="cta-link">
+                            <i class="ph ph-envelope"></i> soporte@prodigiotecnologico.com →
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-info-card">
+                    <div class="contact-icon icon-lav"><i class="ph ph-map-pin"></i></div>
+                    <div class="contact-card-body">
+                        <h4>Ubicación de la Tienda</h4>
+                        <p>Av. San Vicente #303, Megacentro<br/>Santo Domingo Este, República Dominicana</p>
+                        <a href="https://maps.google.com/?q=Megacentro+Santo+Domingo" target="_blank" class="cta-link">
+                            <i class="ph ph-navigation-arrow"></i> Ver en Google Maps →
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-info-card">
+                    <div class="contact-icon icon-blue"><i class="ph ph-clock"></i></div>
+                    <div class="contact-card-body">
+                        <h4>Horario de Atención</h4>
+                        <p>Lunes – Viernes: 8:00am – 5:00pm<br/>Sábados: Cerrado<br/>Domingos: 9:00am – 1:00pm</p>
+                    </div>
+                </div>
+
+                <!-- Social Grid -->
+                <span class="section-label mt-8" style="display:block;">Síguenos en Redes Sociales</span>
+                <div class="social-grid mt-3">
+                    <a href="https://instagram.com" target="_blank" class="social-tile tile-ig">
+                        <i class="ph ph-instagram-logo"></i>
+                        <span>@@prodigiotec</span>
+                        <small>Instagram</small>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" class="social-tile tile-fb">
+                        <i class="ph ph-facebook-logo"></i>
+                        <span>Prodigio Tecnológico</span>
+                        <small>Facebook</small>
+                    </a>
+                    <a href="https://tiktok.com" target="_blank" class="social-tile tile-tt">
+                        <i class="ph ph-tiktok-logo"></i>
+                        <span>@@prodigiotec</span>
+                        <small>TikTok</small>
+                    </a>
+                    <a href="https://wa.me/18095550199" target="_blank" class="social-tile tile-wa">
+                        <i class="ph ph-whatsapp-logo"></i>
+                        <span>+1 (809) 555-0199</span>
+                        <small>WhatsApp</small>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right: Contact Form -->
+            <div class="form-card">
+                <span class="section-label">Formulario de Contacto</span>
+                <h2 class="section-title mb-6" style="font-size:1.4rem;">Envíanos un mensaje</h2>
+
+                @if (sent)
+                {
+                    <div class="alert-success">
+                        <i class="ph ph-check-circle alert-success-icon"></i>
+                        <div>
+                            <h4>¡Mensaje enviado con éxito!</h4>
+                            <p>Un asesor se pondrá en contacto contigo en los próximos 15–30 minutos.</p>
+                        </div>
+                    </div>
+                }
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre completo *</label>
+                        <input type="text" class="form-input" placeholder="Tu nombre" @bind="nombre" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono / WhatsApp *</label>
+                        <input type="tel" class="form-input" placeholder="809-XXX-XXXX" @bind="telefono" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Correo electrónico</label>
+                    <input type="email" class="form-input" placeholder="tu@correo.com (opcional)" @bind="email" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Motivo de consulta</label>
+                    <select class="form-select-full" @bind="motivo">
+                        <option value="">Seleccionar…</option>
+                        <option>Compra de Equipo Nuevo</option>
+                        <option>Financiamiento Fiao</option>
+                        <option>Trade-In de Equipo Usado</option>
+                        <option>Garantía o Servicio Técnico</option>
+                        <option>Información General</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Mensaje</label>
+                    <textarea class="form-textarea" rows="5" placeholder="Cuéntanos qué equipo buscas, tu presupuesto o cualquier consulta…" @bind="mensaje"></textarea>
+                </div>
+
+                <button class="btn btn-primary w-full" @onclick="Enviar"
+                        disabled="@(string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(telefono))">
+                    <i class="ph ph-paper-plane-right"></i> Enviar mensaje
+                </button>
+
+                <p style="font-size:12.5px; color:var(--text-300); text-align:center; margin-top:14px;">
+                    También puedes escribirnos directamente por
+                    <a href="https://wa.me/18095550199" target="_blank" style="color:var(--wa-green); font-weight:700;">WhatsApp</a>
+                    o llamarnos al <strong>809-555-0199</strong>.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Map Embed -->
+<div style="height:340px; background: linear-gradient(135deg, var(--blue-100), var(--bg-section)); display:flex; align-items:center; justify-content:center; border-top:1px solid var(--text-100);">
+    <div class="text-center">
+        <i class="ph ph-map-trifold" style="font-size:64px; color:var(--blue-400); display:block; margin-bottom:12px;"></i>
+        <h3 style="font-size:18px; font-weight:800; color:var(--text-900); margin-bottom:6px;">Av. San Vicente #303, Megacentro</h3>
+        <p style="font-size:14px; color:var(--text-400); margin-bottom:20px;">Santo Domingo Este, República Dominicana</p>
+        <a href="https://maps.google.com/?q=Megacentro+Santo+Domingo" target="_blank" class="btn btn-primary">
+            <i class="ph ph-navigation-arrow"></i> Abrir en Google Maps
+        </a>
+    </div>
+</div>
+
+@code {
+    private string nombre = "";
+    private string telefono = "";
+    private string email = "";
+    private string motivo = "";
+    private string mensaje = "";
+    private bool sent = false;
+
+    private void Enviar()
+    {
+        sent = true;
+        nombre = ""; telefono = ""; email = ""; motivo = ""; mensaje = "";
+    }
+}

@@ -1,0 +1,228 @@
+@page "/cotizador"
+@page "/calculadora"
+@page "/financiamiento"
+
+<PageTitle>Calculadora de Cuotas Fiao – Prodigio Tecnológico</PageTitle>
+
+<!-- PAGE HERO -->
+<div class="catalog-hero-band page-offset">
+    <div class="catalog-hero-inner">
+        <div>
+            <h1 class="catalog-hero-title">Calculadora de Cuotas Fiao</h1>
+            <p class="catalog-hero-sub">Simula tu financiamiento en segundos. Sin trámites, solo con tu cédula.</p>
+        </div>
+        <div class="catalog-hero-pills">
+            <span class="catalog-pill">✓ Inicial desde 20%</span>
+            <span class="catalog-pill">💳 3, 6 o 12 Meses</span>
+            <span class="catalog-pill">⚡ Aprobación Inmediata</span>
+        </div>
+    </div>
+</div>
+
+<section class="page-section" style="background:var(--bg-page);">
+    <div class="section-inner">
+
+        <div class="cotizador-grid">
+
+            <!-- LEFT: Calculator Form -->
+            <div class="form-card">
+                <span class="section-label">Tu Calculadora</span>
+                <h2 class="section-title mb-6" style="font-size:1.5rem;">Configura tu Financiamiento</h2>
+
+                <!-- Equipo -->
+                <div class="form-group">
+                    <label class="form-label">¿Qué equipo buscas?</label>
+                    <select class="form-select-full" @bind="equipo" @bind:after="Calc">
+                        <option value="0">Seleccionar equipo del catálogo…</option>
+                        @foreach (var e in equipos)
+                        {
+                            <option value="@e.Precio">@e.Nombre – $@e.Precio.ToString("N0") RD$</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Precio -->
+                <div class="form-group">
+                    <label class="form-label">Precio del equipo (RD$)</label>
+                    <div class="range-wrap mb-3">
+                        <input type="range" class="range-slider"
+                               min="10000" max="80000" step="500"
+                               value="@precio"
+                               @oninput='e => { precio = int.Parse(e.Value?.ToString() ?? "10000"); Calc(); }' />
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="number" class="form-input" min="10000" max="80000"
+                               @bind="precio" @bind:after="Calc" style="max-width:180px;" />
+                        <span class="font-600 text-400" style="font-size:13.5px;">RD$ – Ajusta el slider arriba</span>
+                    </div>
+                </div>
+
+                <!-- Porcentaje de inicial -->
+                <div class="form-group">
+                    <label class="form-label">Inicial: <strong>@pct%</strong> = $@((precio * pct / 100m).ToString("N0")) RD$</label>
+                    <div class="term-chips">
+                        @foreach (var p in new[] { 20, 30, 40, 50 })
+                        {
+                            <button class="term-chip @(pct == p ? "active" : "")" @onclick="() => { pct = p; Calc(); }">@p%</button>
+                        }
+                    </div>
+                </div>
+
+                <!-- Plazo -->
+                <div class="form-group">
+                    <label class="form-label">Plazo de financiamiento (meses)</label>
+                    <div class="term-chips">
+                        @foreach (var m in new[] { 3, 6, 9, 12 })
+                        {
+                            <button class="term-chip @(plazo == m ? "active" : "")" @onclick="() => { plazo = m; Calc(); }">@m meses</button>
+                        }
+                    </div>
+                </div>
+
+                <!-- Frecuencia -->
+                <div class="form-group">
+                    <label class="form-label">Frecuencia de pago</label>
+                    <div class="flex gap-3">
+                        <button class="term-chip flex-1 @(frec == "Quincenal" ? "active" : "")" @onclick='() => { frec = "Quincenal"; Calc(); }'>📅 Quincenal</button>
+                        <button class="term-chip flex-1 @(frec == "Mensual" ? "active" : "")"   @onclick='() => { frec = "Mensual"; Calc(); }'>🗓️ Mensual</button>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <hr style="border:none; border-top:1px solid var(--text-100); margin:28px 0;" />
+                <p class="font-600 text-700 mb-4" style="font-size:14.5px;">¿Quieres que te llamemos? (Opcional)</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-input" placeholder="Tu nombre" @bind="nombre" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono</label>
+                        <input type="tel" class="form-input" placeholder="809-XXX-XXXX" @bind="tel" />
+                    </div>
+                </div>
+
+                <div class="form-check mb-5">
+                    <input type="checkbox" class="form-check-box" id="acepto" @bind="acepto" />
+                    <label class="form-check-label" for="acepto">
+                        Acepto que Prodigio Tecnológico se comunique conmigo por WhatsApp para confirmar mi solicitud.
+                    </label>
+                </div>
+
+                @if (enviado)
+                {
+                    <div class="alert-success">
+                        <i class="ph ph-check-circle alert-success-icon"></i>
+                        <div>
+                            <h4>¡Solicitud enviada!</h4>
+                            <p>Un asesor se pondrá en contacto contigo en los próximos 15 minutos por WhatsApp.</p>
+                        </div>
+                    </div>
+                }
+
+                <button class="btn btn-primary w-full" disabled="@(!acepto || string.IsNullOrWhiteSpace(nombre))" @onclick="Enviar">
+                    <i class="ph ph-paper-plane-right"></i> Enviar solicitud de Financiamiento
+                </button>
+            </div>
+
+            <!-- RIGHT: Results Card -->
+            <div>
+                <div class="result-card">
+                    <p class="result-label">Tu cuota estimada @frec</p>
+                    <div class="result-amount">$@cuota.ToString("N0") RD$</div>
+                    <p class="result-period">por @(frec == "Quincenal" ? "quincena" : "mes") durante @plazo mes@(plazo != 1 ? "es" : "")</p>
+
+                    <div class="result-divider"></div>
+
+                    <div class="result-row">
+                        <span>💰 Precio del equipo</span>
+                        <strong>$@precio.ToString("N0") RD$</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>📥 Inicial (@pct%)</span>
+                        <strong>$@inicial.ToString("N0") RD$</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>📋 Monto a financiar</span>
+                        <strong>$@financiado.ToString("N0") RD$</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>💳 Plazo</span>
+                        <strong>@plazo meses (@frec)</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>📅 Total de cuotas</span>
+                        <strong>@totalCuotas pagos</strong>
+                    </div>
+                    <div class="result-row highlight">
+                        <span><strong>🏷️ Total a pagar</strong></span>
+                        <strong style="font-size:1.05rem;">$@totalPagar.ToString("N0") RD$</strong>
+                    </div>
+
+                    <div style="margin-top:24px; display:flex; flex-direction:column; gap:10px;">
+                        <a href="https://wa.me/18095550199?text=Hola,%20quiero%20financiar%20un%20equipo%20de%20$@precio.ToString("N0")%20RD$%20a%20@plazo%20meses%20con%20inicial%20de%20@pct%25"
+                           target="_blank" class="btn btn-wa" style="justify-content:center;">
+                            <i class="ph ph-whatsapp-logo"></i> Confirmar por WhatsApp
+                        </a>
+                        <a href="/tienda" class="btn btn-outline" style="border-color:rgba(255,255,255,.2); color:rgba(255,255,255,.8); justify-content:center;">
+                            <i class="ph ph-shopping-bag"></i> Ver catálogo
+                        </a>
+                    </div>
+
+                    <div style="margin-top:20px; padding:14px; background:rgba(255,255,255,.08); border-radius:10px; font-size:12px; color:rgba(255,255,255,.6); line-height:1.6;">
+                        ⓘ Simulación estimada. Las cuotas reales pueden variar según historial y condiciones Fiao. Aprobación sujeta a evaluación.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+@code {
+    private decimal precio = 35000;
+    private int pct = 30;
+    private int plazo = 6;
+    private string frec = "Mensual";
+    private decimal equipo = 0;
+
+    private string nombre = "";
+    private string tel = "";
+    private bool acepto = false;
+    private bool enviado = false;
+
+    private decimal inicial => precio * pct / 100m;
+    private decimal financiado => precio - inicial;
+    private int totalCuotas => frec == "Quincenal" ? plazo * 2 : plazo;
+    private decimal cuota => totalCuotas > 0 ? Math.Ceiling(financiado / totalCuotas) : 0;
+    private decimal totalPagar => inicial + cuota * totalCuotas;
+
+    public record Modelo(string Nombre, int Precio);
+    private List<Modelo> equipos = new()
+    {
+        new("iPhone 15 Pro Max (256GB)",   62500),
+        new("iPhone 14 Pro (128GB)",       44900),
+        new("iPhone 13 (128GB)",           29500),
+        new("Samsung Galaxy S24 Ultra",    68000),
+        new("Samsung Galaxy S23 FE",       28900),
+        new("Tecno Camon 30 Pro 5G",      18500),
+        new("Infinix Note 40 Pro 5G",     16500),
+        new("Xiaomi 13T Pro (512GB)",      33000),
+        new("Motorola Edge 40 Neo",        16800),
+    };
+
+    protected override void OnInitialized() => Calc();
+
+    private void Calc()
+    {
+        if (equipo > 0) precio = (int)equipo;
+        if (precio < 10000) precio = 10000;
+        if (precio > 80000) precio = 80000;
+    }
+
+    private void Enviar()
+    {
+        enviado = true;
+    }
+}

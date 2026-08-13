@@ -1,0 +1,205 @@
+@page "/facturas/detalle/{Id:int}"
+@inject FacturaService FacturaService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Detalle de Factura @(Factura?.Numero) - Prodigio Tecnológico</PageTitle>
+
+<div class="section-header print-hide">
+    <div class="section-title">
+        <h2>Detalle de Factura</h2>
+        <p>Visualización oficial y control del comprobante de venta</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-secondary" @onclick="Volver">
+            <i class="ph ph-arrow-left"></i> Volver
+        </button>
+        <button class="btn btn-secondary" @onclick="Imprimir">
+            <i class="ph ph-printer"></i> Imprimir
+        </button>
+        <button class="btn btn-primary" @onclick="Editar">
+            <i class="ph ph-pencil"></i> Editar Factura
+        </button>
+    </div>
+</div>
+
+@if (Factura == null)
+{
+    <div class="card text-center" style="padding: 40px;">
+        <p class="text-muted">No se encontró la factura solicitada.</p>
+    </div>
+}
+else
+{
+    <!-- Printable Invoice Template -->
+    <div class="card card-glass" id="printable-invoice" style="position: relative;">
+        <!-- Status Watermark (only visible on screen or neat printing) -->
+        <div style="position: absolute; top: 20px; right: 28px; text-align: right;">
+            <span class="badge @GetBadgeClass(Factura.Estado)" style="font-size: 14px; padding: 6px 16px;">
+                <span class="pulse-dot">•</span> @Factura.Estado.ToString().ToUpper()
+            </span>
+        </div>
+
+        <div class="factura-header" style="margin-top: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 24px;">
+            <div>
+                <div class="d-flex align-center gap-3">
+                    <div class="brand-icon" style="width: 36px; height: 36px; font-size: 16px;">
+                        <i class="ph ph-device-mobile" style="color: white;"></i>
+                    </div>
+                    <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">Prodigio Tecnológico</span>
+                </div>
+                <p class="text-muted" style="margin-top: 8px; font-size: 12.5px; line-height: 1.5;">
+                    Av. Tecnológica 404, Ciudad Tech<br />
+                    RNC: 1-32-54321-0 | Tel: +1 234 567 8900<br />
+                    soporte@prodigio.com
+                </p>
+            </div>
+            <div style="text-align: right; margin-top: 15px;">
+                <h3 class="text-accent" style="font-size: 22px; font-weight: 900;">@Factura.Numero</h3>
+                <p class="text-muted" style="font-size: 12.5px; margin-top: 4px;">
+                    Fecha Emisión: <strong>@Factura.Fecha.ToString("dd/MM/yyyy")</strong><br />
+                    @if (Factura.FechaVencimiento.HasValue)
+                    {
+                        <span>Vence: <strong>@Factura.FechaVencimiento.Value.ToString("dd/MM/yyyy")</strong></span>
+                    }
+                </p>
+            </div>
+        </div>
+
+        <div class="factura-meta" style="margin-top: 24px;">
+            <div class="meta-group">
+                <p>Facturado A:</p>
+                <strong>@Factura.Cliente.Nombre</strong>
+                <div class="text-muted" style="font-size: 13px; margin-top: 6px; line-height: 1.5;">
+                    RNC/Cédula: @Factura.Cliente.RNC<br />
+                    @if (!string.IsNullOrEmpty(Factura.Cliente.Direccion))
+                    {
+                        <span>Dirección: @Factura.Cliente.Direccion<br /></span>
+                    }
+                    @if (!string.IsNullOrEmpty(Factura.Cliente.Telefono))
+                    {
+                        <span>Teléfono: @Factura.Cliente.Telefono<br /></span>
+                    }
+                    @if (!string.IsNullOrEmpty(Factura.Cliente.Email))
+                    {
+                        <span>Email: @Factura.Cliente.Email</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div style="margin-top: 24px; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden;">
+            <table class="items-table">
+                <thead>
+                    <tr style="background: rgba(255,255,255,0.02)">
+                        <th>Descripción del Producto / Servicio</th>
+                        <th style="text-align: center; width: 80px;">Cant.</th>
+                        <th style="text-align: right; width: 140px;">Precio Unitario</th>
+                        <th style="text-align: right; width: 140px;">Importe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Factura.Items)
+                    {
+                        <tr>
+                            <td><strong>@item.Descripcion</strong></td>
+                            <td style="text-align: center;">@item.Cantidad</td>
+                            <td style="text-align: right;">RD$ @item.PrecioUnitario.ToString("N2")</td>
+                            <td style="text-align: right; color: var(--text-primary); font-weight: 600;">
+                                RD$ @item.Subtotal.ToString("N2")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals & Notes -->
+        <div class="d-flex" style="justify-content: space-between; margin-top: 28px; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
+            <div style="max-width: 400px; flex: 1;">
+                @if (!string.IsNullOrWhiteSpace(Factura.Notas))
+                {
+                    <h4 class="text-muted" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;">Notas adicionales:</h4>
+                    <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6; background: rgba(255,255,255,0.02); padding: 12px; border-radius: var(--radius-sm); border: 1px dashed var(--border-color);">
+                        @Factura.Notas
+                    </p>
+                }
+            </div>
+            
+            <div class="totals-box" style="margin-top: 0;">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span>RD$ @Factura.Subtotal.ToString("N2")</span>
+                </div>
+                <div class="total-row">
+                    <span>ITBIS (18%):</span>
+                    <span>RD$ @Factura.ITBIS.ToString("N2")</span>
+                </div>
+                <div class="total-row">
+                    <span>Total General:</span>
+                    <span>RD$ @Factura.Total.ToString("N2")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="print-only" style="margin-top: 60px; border-top: 1px solid var(--border-color); padding-top: 20px; text-align: center; font-size: 11px; color: var(--text-muted);">
+            Prodigio Tecnológico "Donde tú eres el valor" - Gracias por su preferencia.
+        </div>
+    </div>
+}
+
+<style>
+    @@media print {
+        .print-hide { display: none !important; }
+        .sidebar { display: none !important; }
+        .main-content { margin-left: 0 !important; width: 100% !important; }
+        .topbar { display: none !important; }
+        .page-content { padding: 0 !important; }
+        .card { border: none !important; background: white !important; color: black !important; box-shadow: none !important; }
+        .text-muted { color: #666 !important; }
+        .text-accent { color: black !important; }
+        .badge { border: 1px solid #000 !important; color: black !important; background: transparent !important; }
+        .pulse-dot { display: none !important; }
+        table th { background: #eee !important; color: black !important; border-bottom: 1px solid black !important; }
+        table td { color: black !important; border-bottom: 1px solid #ddd !important; }
+        .totals-box { border: 1px solid black !important; color: black !important; background: white !important; }
+        .total-row { color: black !important; border-bottom: 1px solid #ddd !important; }
+        .total-row:last-child { color: black !important; }
+        .print-only { display: block !important; }
+    }
+    .print-only { display: none; }
+</style>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Factura? Factura { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Factura = FacturaService.GetById(Id);
+    }
+
+    private void Volver()
+    {
+        Navigation.NavigateTo("facturas");
+    }
+
+    private void Editar()
+    {
+        Navigation.NavigateTo($"facturas/editar/{Id}");
+    }
+
+    private async Task Imprimir()
+    {
+        await JS.InvokeVoidAsync("window.print");
+    }
+
+    private string GetBadgeClass(EstadoFactura estado) => estado switch
+    {
+        EstadoFactura.Pagada => "badge-success",
+        EstadoFactura.Pendiente => "badge-warning",
+        EstadoFactura.Cancelada => "badge-danger",
+        _ => "badge-purple"
+    };
+}

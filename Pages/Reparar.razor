@@ -1,0 +1,210 @@
+@page "/reparar"
+@inject IJSRuntime JSRuntime
+@inject ProdigioDatabaseService DbService
+
+<PageTitle>Laboratorio de Reparación & Cotizador PDF - Prodigio Tecnológico</PageTitle>
+
+<div class="container-fluid padding-space">
+    <div class="section-header text-center">
+        <h1 class="gradient-title">Laboratorio de Reparación Técnico</h1>
+        <p class="section-subtitle center">Diagnóstico computarizado y reparación express en menos de 2 horas con componentes 100% originales.</p>
+    </div>
+
+    <!-- Banner Laboratorio -->
+    <div class="repair-hero-card mb-5">
+        <div class="repair-hero-img">
+            <img src="/phone_repair.png" alt="Proceso de Reparación" class="rounded-banner-img" />
+        </div>
+        <div class="repair-hero-text">
+            <span class="badge-tag accent-teal">Laboratorio Certificado</span>
+            <h2>Especialistas en Microsoldadura & Cambio de Displays</h2>
+            <p>Solucionamos problemas de encendido, pantallas rotas, baterías degradadas, conectores de carga dañados y fallas de software en Apple, Samsung, Xiaomi y más.</p>
+            <div class="repair-highlights-grid">
+                <div class="r-highlight"><i class="ph ph-lightning"></i> Reparación Express 45 mins</div>
+                <div class="r-highlight"><i class="ph ph-shield-check"></i> Garantía Escrita de 6 a 12 Meses</div>
+                <div class="r-highlight"><i class="ph ph-cpu"></i> Repuestos Grado OEM u Originales</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario Cotizador & Generador PDF -->
+    <div class="quote-calculator-card mb-5">
+        <div class="quote-card-header">
+            <h2><i class="ph ph-receipt"></i> Generador Oficial de Cotización en PDF</h2>
+            <p>Obtén un presupuesto formal desglosado listo para descargar o imprimir con el logo de Prodigio Tecnológico.</p>
+        </div>
+
+        <div class="quote-form-grid">
+            <div class="form-group mb-3">
+                <label>Nombre del Cliente:</label>
+                <input type="text" class="form-control-custom" placeholder="Ej: Benjamin Serrano" @bind="clienteNombre" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Teléfono / WhatsApp:</label>
+                <input type="text" class="form-control-custom" placeholder="Ej: (809) 555-0199" @bind="clienteTelefono" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Marca del Dispositivo:</label>
+                <select class="form-control-custom" @bind="equipoMarca" @bind:after="ActualizarCostosSugeridos">
+                    <option value="Apple (iPhone)">Apple (iPhone)</option>
+                    <option value="Samsung Galaxy">Samsung Galaxy</option>
+                    <option value="Xiaomi">Xiaomi</option>
+                    <option value="Motorola">Motorola</option>
+                    <option value="Google Pixel">Google Pixel</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Modelo del Dispositivo:</label>
+                <input type="text" class="form-control-custom" placeholder="Ej: iPhone 13 Pro Max / Galaxy S22" @bind="equipoModelo" />
+            </div>
+
+            <div class="form-group mb-3 full-width">
+                <label>Tipo de Reparación / Diagnóstico:</label>
+                <select class="form-control-custom" @bind="tipoReparacion" @bind:after="ActualizarCostosSugeridos">
+                    <option value="Reemplazo de Pantalla / Display OLED">Reemplazo de Pantalla / Display OLED</option>
+                    <option value="Reemplazo de Batería (Ciclo 0)">Reemplazo de Batería (Ciclo 0)</option>
+                    <option value="Reparación de Conector de Carga / Puerto USB-C">Reparación de Conector de Carga / Puerto USB-C</option>
+                    <option value="Reparación de Cristal Trasero / Carcasa">Reparación de Cristal Trasero / Carcasa</option>
+                    <option value="Microsoldadura en Placa Base / IC de Carga">Microsoldadura en Placa Base / IC de Carga</option>
+                    <option value="Mantenimiento por Humedad / Limpieza Ultrasónica">Mantenimiento por Humedad / Limpieza Ultrasónica</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Costo de Repuesto (RD$):</label>
+                <input type="number" class="form-control-custom" @bind="costoRepuesto" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Mano de Obra Especializada (RD$):</label>
+                <input type="number" class="form-control-custom" @bind="costoManoObra" />
+            </div>
+
+            <div class="total-quote-box full-width">
+                <div>
+                    <span>Total Estimado Cotización:</span>
+                    <h3>$@CostoTotalRD.ToString("N0") RD$</h3>
+                </div>
+                <button class="btn btn-primary btn-large" @onclick="GenerarPdfCotizacion">
+                    <i class="ph ph-file-pdf"></i> Descargar Cotización en PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área de Contacto Directo con Técnicos -->
+    <div class="technician-contact-card">
+        <div class="section-title text-center mb-4">
+            <h2><i class="ph ph-headset"></i> Contacto Directo con el Laboratorio Técnico</h2>
+            <p>Comunícate directamente con nuestro equipo de ingenieros y especialistas.</p>
+        </div>
+
+        <div class="tech-contact-grid">
+            <div class="tech-contact-box">
+                <div class="tech-icon-circle whatsapp-bg"><i class="ph ph-whatsapp-logo"></i></div>
+                <h4>WhatsApp del Laboratorio</h4>
+                <p>Consultas rápidas sobre repuestos o estado de tu reparación.</p>
+                <a href="https://wa.me/18095550199?text=Hola,%20deseo%20consultar%20sobre%20una%20reparacion" target="_blank" class="btn btn-success btn-sm">
+                    Abrir Chat de WhatsApp
+                </a>
+            </div>
+
+            <div class="tech-contact-box">
+                <div class="tech-icon-circle phone-bg"><i class="ph ph-phone-call"></i></div>
+                <h4>Llamada Telefónica</h4>
+                <p>Atención personalizada inmediata por nuestro asesor de turno.</p>
+                <a href="tel:+18095550199" class="btn btn-primary btn-sm">
+                    Llamar al +1 (809) 555-0199
+                </a>
+            </div>
+
+            <div class="tech-contact-box">
+                <div class="tech-icon-circle email-bg"><i class="ph ph-envelope-simple"></i></div>
+                <h4>Correo Electrónico</h4>
+                <p>Soporte técnico, garantías corporativas y facturación.</p>
+                <a href="mailto:soporte@prodigiotecnologico.com" class="btn btn-secondary btn-sm">
+                    Enviar Correo Técnico
+                </a>
+            </div>
+
+            <div class="tech-contact-box info-box">
+                <div class="tech-icon-circle info-bg"><i class="ph ph-clock"></i></div>
+                <h4>Horarios & Tiempos</h4>
+                <p><strong>Horario:</strong> Lun - Sáb: 8:00 AM - 7:00 PM</p>
+                <p class="mb-0 text-accent"><strong>Respuesta Estimada:</strong> &lt; 15 Minutos</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string clienteNombre = "";
+    private string clienteTelefono = "";
+    private string equipoMarca = "Apple (iPhone)";
+    private string equipoModelo = "iPhone 13 Pro";
+    private string tipoReparacion = "Reemplazo de Pantalla / Display OLED";
+    private decimal costoRepuesto = 6500;
+    private decimal costoManoObra = 1500;
+
+    private decimal CostoTotalRD => costoRepuesto + costoManoObra;
+
+    private void ActualizarCostosSugeridos()
+    {
+        if (tipoReparacion.Contains("Pantalla"))
+        {
+            costoRepuesto = equipoMarca.Contains("Apple") ? 7500 : 5500;
+            costoManoObra = 1500;
+        }
+        else if (tipoReparacion.Contains("Batería"))
+        {
+            costoRepuesto = 2200;
+            costoManoObra = 800;
+        }
+        else if (tipoReparacion.Contains("Conector"))
+        {
+            costoRepuesto = 1200;
+            costoManoObra = 1000;
+        }
+        else if (tipoReparacion.Contains("Microsoldadura"))
+        {
+            costoRepuesto = 3000;
+            costoManoObra = 3500;
+        }
+    }
+
+    private async Task GenerarPdfCotizacion()
+    {
+        var novaCotizacion = new Models.Cotizacion
+        {
+            ClienteNombre = string.IsNullOrWhiteSpace(clienteNombre) ? "Cliente Estimado" : clienteNombre,
+            ClienteTelefono = clienteTelefono,
+            EquipoMarca = equipoMarca,
+            EquipoModelo = equipoModelo,
+            TipoReparacion = tipoReparacion,
+            CostoRepuesto = costoRepuesto,
+            CostoManoObra = costoManoObra
+        };
+
+        await DbService.GuardarCotizacionAsync(novaCotizacion);
+
+        var pdfData = new
+        {
+            clienteNombre = novaCotizacion.ClienteNombre,
+            clienteTelefono = novaCotizacion.ClienteTelefono,
+            equipoMarca = novaCotizacion.EquipoMarca,
+            equipoModelo = novaCotizacion.EquipoModelo,
+            diagnostico = novaCotizacion.TipoReparacion,
+            total = novaCotizacion.Total,
+            items = new[]
+            {
+                new { concepto = $"Pieza / Repuesto: {tipoReparacion}", garantia = "6 Meses", costo = costoRepuesto },
+                new { concepto = "Mano de Obra e Inspección Técnica Computarizada", garantia = "Garantía Total", costo = costoManoObra }
+            }
+        };
+
+        await JSRuntime.InvokeVoidAsync("generateCotizacionPdf", pdfData);
+    }
+}

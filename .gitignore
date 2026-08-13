@@ -1,0 +1,15 @@
+## Ignore Visual Studio / .NET build artifacts
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+.vs/
+.idea/
+*.user
+*.userosscache
+*.sln.docstates
+.vscode/
+
+## OS generated files
+.DS_Store
+Thumbs.db

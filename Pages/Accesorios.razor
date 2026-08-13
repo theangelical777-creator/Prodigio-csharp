@@ -1,0 +1,161 @@
+@page "/accesorios"
+
+<PageTitle>Accesorios Premium - Prodigio Tecnológico</PageTitle>
+
+<div class="container-fluid padding-space">
+    <div class="section-header text-center">
+        <h1 class="gradient-title">Accesorios Premium & Protección</h1>
+        <p class="section-subtitle center">Complementa y protege tu smartphone con las marcas líderes del mercado y garantía de satisfacción.</p>
+    </div>
+
+    <!-- Banner Principal Integrado de Accesorios -->
+    <div class="accessories-hero-card mb-5">
+        <div class="acc-banner-img-wrapper">
+            <img src="/premium_accessories.png" alt="Accesorios Premium Integrados" class="rounded-banner-img" />
+        </div>
+        <div class="acc-banner-info">
+            <h2>Los Accesorios Más Vendidos en Un Solo Lugar</h2>
+            <p>Descubre nuestra línea completa de protección contra impactos, carga ultrarrápida GaN y audio inalámbrico de alta definición para tu dispositivo móvil.</p>
+            
+            <div class="acc-tags-row">
+                <span class="acc-tag"><i class="ph ph-shield"></i> Fundas & Micas</span>
+                <span class="acc-tag"><i class="ph ph-headphones"></i> Audio Bluetooth</span>
+                <span class="acc-tag"><i class="ph ph-lightning"></i> Cargadores Rápidos</span>
+                <span class="acc-tag"><i class="ph ph-battery-charging"></i> Power Banks</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación por Categorías -->
+    <div class="acc-category-selector mb-5">
+        <button class="cat-pill-btn @(activeCategory == "Todas" ? "active" : "")" @onclick='() => SetCategory("Todas")'>
+            Todos los Accesorios
+        </button>
+        <button class="cat-pill-btn @(activeCategory == "Fundas" ? "active" : "")" @onclick='() => SetCategory("Fundas")'>
+            <i class="ph ph-shield"></i> Fundas y Micas
+        </button>
+        <button class="cat-pill-btn @(activeCategory == "Audio" ? "active" : "")" @onclick='() => SetCategory("Audio")'>
+            <i class="ph ph-headphones"></i> Audio Bluetooth
+        </button>
+        <button class="cat-pill-btn @(activeCategory == "Cargadores" ? "active" : "")" @onclick='() => SetCategory("Cargadores")'>
+            <i class="ph ph-lightning"></i> Cargadores
+        </button>
+    </div>
+
+    <!-- Sección Categoría 1: Fundas y Micas -->
+    @if (activeCategory == "Todas" || activeCategory == "Fundas")
+    {
+        <div class="category-block-card mb-5 fade-in">
+            <div class="cat-header-split">
+                <div>
+                    <h2><i class="ph ph-shield"></i> Categoría: Fundas y Micas</h2>
+                    <p>Carcasas de alto impacto (Mil-Spec), fundas de silicona líquida y cristales templados 9H anti-rayas.</p>
+                </div>
+                <span class="badge-tag">Protección Extrema</span>
+            </div>
+            <div class="cat-body-split">
+                <div class="cat-featured-img">
+                    <img src="/cases_micas.png" alt="Fundas, Carcasas y Micas" class="rounded-img" />
+                </div>
+                <div class="cat-items-grid">
+                    <div class="acc-product-card">
+                        <h4>Funda MagSafe Silicone Case</h4>
+                        <p>Para iPhone 13 / 14 / 15 Pro Series</p>
+                        <span class="acc-price">$1,200 RD$</span>
+                    </div>
+                    <div class="acc-product-card">
+                        <h4>Mica Cristal Templado 9H Premium</h4>
+                        <p>Instalación sin burbujas con marco guía</p>
+                        <span class="acc-price">$500 RD$</span>
+                    </div>
+                    <div class="acc-product-card">
+                        <h4>Carcasa Transparente Anti-Amarilleo</h4>
+                        <p>Bordes reforzados para Samsung y iPhone</p>
+                        <span class="acc-price">$950 RD$</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Sección Categoría 2: Audio Bluetooth -->
+    @if (activeCategory == "Todas" || activeCategory == "Audio")
+    {
+        <div class="category-block-card mb-5 fade-in">
+            <div class="cat-header-split">
+                <div>
+                    <h2><i class="ph ph-headphones"></i> Categoría: Audio Bluetooth</h2>
+                    <p>Audífonos TWS con cancelación activa de ruido, auriculares deportivos y bocinas portátiles HD.</p>
+                </div>
+                <span class="badge-tag accent-teal">Sonido Hi-Fi</span>
+            </div>
+            <div class="cat-body-split">
+                <div class="cat-featured-img">
+                    <img src="/bluetooth_audio.png" alt="Audio Bluetooth" class="rounded-img" />
+                </div>
+                <div class="cat-items-grid">
+                    <div class="acc-product-card">
+                        <h4>AirPods Pro 2da Gen (OEM Certified)</h4>
+                        <p>Cancelación de ruido activa + Estuche Magsafe</p>
+                        <span class="acc-price">$3,800 RD$</span>
+                    </div>
+                    <div class="acc-product-card">
+                        <h4>Audífonos Over-Ear Wireless Pro</h4>
+                        <p>Batería de 40h de reproducción continua</p>
+                        <span class="acc-price">$2,900 RD$</span>
+                    </div>
+                    <div class="acc-product-card">
+                        <h4>Bocina Bluetooth Resistente al Agua IPX7</h4>
+                        <p>Potencia de 20W RMS con graves reforzados</p>
+                        <span class="acc-price">$2,450 RD$</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Sección Categoría 3: Cargadores -->
+    @if (activeCategory == "Todas" || activeCategory == "Cargadores")
+    {
+        <div class="category-block-card mb-5 fade-in">
+            <div class="cat-header-split">
+                <div>
+                    <h2><i class="ph ph-lightning"></i> Categoría: Cargadores</h2>
+                    <p>Cargadores de pared ultrarrápidos GaN (20W, 35W, 65W), cables reforzados USB-C y Lightning, bases inalámbricas y adaptadores.</p>
+                </div>
+                <span class="badge-tag warning">Carga Ultrarrápida</span>
+            </div>
+            <div class="cat-body-split">
+                <div class="cat-featured-img">
+                    <img src="/chargers.png" alt="Cargadores y Cables" class="rounded-img" />
+                </div>
+                <div class="cat-items-grid">
+                    <div class="acc-product-card">
+                        <h4>Cargador de Pared GaN 35W Dual Port</h4>
+                        <p>Salida USB-C PD para carga rápida de 0 a 60% en 30 mins</p>
+                        <span class="acc-price">$1,450 RD$</span>
+                    </div>
+                    <div class="acc-product-card">
+                        <h4>Cable Trenzado Tipo-C a Lightning / USB-C (2 metros)</h4>
+                        <p>Nylon de alta resistencia anti-enredos</p>
+                        <span class="acc-price">$750 RD$</span>
+                    </div>
+                    <div class="acc-product-card">
+                        <h4>Base de Carga Inalámbrica QI 15W</h4>
+                        <p>Compatible con iPhone, Samsung Galaxy y AirPods</p>
+                        <span class="acc-price">$1,600 RD$</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private string activeCategory = "Todas";
+
+    private void SetCategory(string cat)
+    {
+        activeCategory = cat;
+    }
+}

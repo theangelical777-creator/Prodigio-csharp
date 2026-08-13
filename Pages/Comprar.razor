@@ -1,0 +1,194 @@
+@page "/tienda"
+@page "/comprar"
+@page "/productos"
+
+<PageTitle>Tienda de Celulares – Prodigio Tecnológico</PageTitle>
+
+<!-- Hero Band -->
+<div class="catalog-hero-band page-offset">
+    <div class="catalog-hero-inner">
+        <div>
+            <h1 class="catalog-hero-title">Tienda de Celulares</h1>
+            <p class="catalog-hero-sub">Smartphones certificados Grado A+ con 1 año de garantía escrita.</p>
+        </div>
+        <div class="catalog-hero-pills">
+            <span class="catalog-pill">✓ Garantía 12 Meses</span>
+            <span class="catalog-pill">💳 Inicial desde 20%</span>
+            <span class="catalog-pill">🚚 Envío Gratis 24h</span>
+        </div>
+    </div>
+</div>
+
+<section class="catalog-section">
+    <div class="section-inner">
+
+        <!-- Filter Bar -->
+        <div class="filter-bar mb-8">
+            <!-- Search -->
+            <div class="search-wrap mb-5">
+                <i class="ph ph-magnifying-glass search-icon"></i>
+                <input type="text"
+                       class="search-field"
+                       placeholder="Buscar modelo o marca (ej: iPhone 15, Tecno Camon, Galaxy S24)…"
+                       @bind="q"
+                       @bind:event="oninput" />
+                @if (!string.IsNullOrWhiteSpace(q))
+                {
+                    <button class="search-clear" @onclick='() => q = ""'><i class="ph ph-x"></i></button>
+                }
+            </div>
+
+            <!-- Brand Chips -->
+            <div class="flex items-center gap-3 mb-5 flex-wrap">
+                <span class="font-600 text-400" style="font-size:13px; white-space:nowrap;">Marca:</span>
+                <div class="brand-chips">
+                    @foreach (var m in marcas)
+                    {
+                        <button class="brand-chip @(activeMarca == m ? "active" : "")" @onclick="() => { activeMarca = m; page = 1; }">@m</button>
+                    }
+                </div>
+            </div>
+
+            <!-- Secondary filters row -->
+            <div class="flex items-center gap-5 flex-wrap">
+                <div class="flex items-center gap-3">
+                    <label style="font-size:13px;font-weight:600;color:var(--text-400);white-space:nowrap;">Condición:</label>
+                    <select class="filter-select" @bind="condicion">
+                        <option value="Todos">Todos</option>
+                        <option value="Sellado">Nuevo / Sellado</option>
+                        <option value="Como Nuevo">Como Nuevo (Grado A+)</option>
+                        <option value="Excelente">Excelente (Grado A)</option>
+                    </select>
+                </div>
+                <div class="flex items-center gap-3">
+                    <label style="font-size:13px;font-weight:600;color:var(--text-400);white-space:nowrap;">Ordenar:</label>
+                    <select class="filter-select" @bind="orden">
+                        <option value="">Relevancia</option>
+                        <option value="asc">Precio: menor → mayor</option>
+                        <option value="desc">Precio: mayor → menor</option>
+                    </select>
+                </div>
+                <span class="results-count" style="margin-left:auto;">Mostrando <strong>@Paginated.Count()</strong> de <strong>Filtered.Count()</strong> equipos</span>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        @if (!Filtered.Any())
+        {
+            <div class="no-results-box">
+                <i class="ph ph-cellphone-slash"></i>
+                <h3>No encontramos resultados</h3>
+                <p>Prueba con otra búsqueda o selecciona "Todas" las marcas.</p>
+                <button class="btn btn-outline mt-6" @onclick="Reset">Restablecer filtros</button>
+            </div>
+        }
+        else
+        {
+            <div class="products-grid">
+                @foreach (var p in Paginated)
+                {
+                    <div class="product-card">
+                        <div class="product-img-wrap">
+                            <div class="product-badges">
+                                <span class="badge-stock">✓ En Stock</span>
+                                <span class="badge-cond">@p.Estado</span>
+                            </div>
+                            <img src="@p.Imagen" alt="@p.Modelo" class="product-img" onError="this.src='/used_phones.png'" />
+                        </div>
+                        <div class="product-body">
+                            <p class="product-brand">@p.Marca</p>
+                            <h3 class="product-name">@p.Modelo</h3>
+                            <p class="product-specs"><i class="ph ph-hard-drive"></i> @p.Cap · @p.Color</p>
+                            <div class="financing-pill">
+                                <i class="ph ph-credit-card"></i> Cuota desde <strong>$@((p.Precio * .1m).ToString("N0")) RD$/mes</strong>
+                            </div>
+                            <div class="price-block">
+                                @if (p.PrecioAnterior > p.Precio)
+                                {
+                                    <span class="price-old">$@p.PrecioAnterior.ToString("N0") RD$</span>
+                                }
+                                <span class="price-main">$@p.Precio.ToString("N0") RD$</span>
+                            </div>
+                            <div class="product-actions">
+                                <a href="https://wa.me/18095550199?text=Hola,%20me%20interesa%20el%20@Uri.EscapeDataString(p.Modelo)"
+                                   target="_blank" class="btn btn-wa btn-sm">
+                                    <i class="ph ph-whatsapp-logo"></i> Comprar por WA
+                                </a>
+                                <a href="/cotizador" class="btn btn-outline btn-sm">Cotizar cuota</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (TotalPages > 1)
+            {
+                <div class="pagination-row">
+                    <button class="page-btn" disabled="@(page == 1)" @onclick="() => page--">
+                        <i class="ph ph-caret-left"></i>
+                    </button>
+                    @for (int i = 1; i <= TotalPages; i++)
+                    {
+                        int pi = i;
+                        <button class="page-btn @(page == pi ? "current" : "")" @onclick="() => page = pi">@pi</button>
+                    }
+                    <button class="page-btn" disabled="@(page == TotalPages)" @onclick="() => page++">
+                        <i class="ph ph-caret-right"></i>
+                    </button>
+                </div>
+            }
+        }
+
+    </div>
+</section>
+
+@code {
+    private string q = "";
+    private string activeMarca = "Todas";
+    private string condicion = "Todos";
+    private string orden = "";
+    private int page = 1;
+    private int perPage = 8;
+
+    private List<string> marcas = new() { "Todas", "iPhone", "Samsung", "Xiaomi", "Tecno", "Infinix", "Otros" };
+
+    public record Equipo(string Marca, string Modelo, string Cap, string Color, string Estado, decimal Precio, decimal PrecioAnterior, string Imagen);
+
+    private List<Equipo> inventario = new()
+    {
+        new("iPhone",  "iPhone 15 Pro Max",      "256 GB", "Titanio Natural", "Como Nuevo", 62500, 70000, "/iphone15promax.png"),
+        new("iPhone",  "iPhone 14 Pro",           "128 GB", "Morado Oscuro",   "Excelente",  44900, 52000, "/iphone14pro.png"),
+        new("iPhone",  "iPhone 13",               "128 GB", "Azul Medianoche", "Como Nuevo", 29500, 34000, "/iphone13.png"),
+        new("Samsung", "Galaxy S24 Ultra",         "512 GB", "Titanium Gray",   "Sellado",    68000, 78000, "/s24ultra.png"),
+        new("Samsung", "Galaxy S23 FE",            "256 GB", "Verde Menta",     "Como Nuevo", 28900, 33500, "/s23fe.png"),
+        new("Samsung", "Galaxy A54 5G",            "256 GB", "Awesome Lime",    "Sellado",    19500, 22000, "/s23fe.png"),
+        new("Tecno",   "Tecno Camon 30 Pro 5G",   "256 GB", "Snowy White",     "Sellado",    18500, 21000, "/tecnocamon30.png"),
+        new("Tecno",   "Tecno Spark 20 Pro+",     "256 GB", "Temporal Orbits", "Sellado",    13900, 15500, "/tecnospark20.png"),
+        new("Infinix", "Infinix Note 40 Pro 5G",  "256 GB", "Vintage Green",   "Sellado",    16500, 18900, "/infinixnote40.png"),
+        new("Infinix", "Infinix Hot 40 Pro",       "128 GB", "Horizon Gold",    "Sellado",    11900, 13500, "/infinixnote40.png"),
+        new("Xiaomi",  "Xiaomi 13T Pro",           "512 GB", "Negro Cuero",     "Sellado",    33000, 38000, "/xiaomi13t.png"),
+        new("Motorola","Motorola Edge+ 2023",    "512 GB", "Negro Interestelar","Sellado", 41500, 45650, "/motorolaedge.png"),
+        new("Honor",   "HONOR Magic8 Lite",      "256 GB", "Verde Esmeralda",  "Sellado",   17500, 19250, "/honormagic.png"),
+        new("Xiaomi",  "Redmi Note 13 Pro+",       "256 GB", "Blanco Aurora",   "Sellado",    19800, 21780, "/redminote13.png"),
+        new("Otros",   "Google Pixel 8 Pro",       "128 GB", "Bay Blue",        "Como Nuevo", 39900, 46000, "/pixel8pro.png"),
+    };
+
+    private void Reset() { q = ""; activeMarca = "Todas"; condicion = "Todos"; orden = ""; page = 1; }
+
+    private IEnumerable<Equipo> Filtered
+    {
+        get {
+            var r = inventario.AsEnumerable();
+            if (!string.IsNullOrWhiteSpace(q)) { var lq = q.ToLower(); r = r.Where(e => e.Modelo.ToLower().Contains(lq) || e.Marca.ToLower().Contains(lq)); }
+            if (activeMarca != "Todas") r = r.Where(e => e.Marca == activeMarca);
+            if (condicion != "Todos") r = r.Where(e => e.Estado == condicion);
+            if (orden == "asc")  r = r.OrderBy(e => e.Precio);
+            if (orden == "desc") r = r.OrderByDescending(e => e.Precio);
+            return r;
+        }
+    }
+
+    private int TotalPages => (int)Math.Ceiling((double)Filtered.Count() / perPage);
+    private IEnumerable<Equipo> Paginated => Filtered.Skip((page - 1) * perPage).Take(perPage);
+}

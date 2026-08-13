@@ -1,0 +1,186 @@
+@inject IJSRuntime JS
+
+<div class="chatbot-wrap">
+    @if (isOpen)
+    {
+        <div class="chat-window">
+
+            <!-- Header -->
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-avatar" style="overflow:hidden; padding:0;">
+                        <img src="/images/logo.png" alt="Bot Logo" style="width:100%;height:100%;object-fit:cover;" />
+                    </div>
+                    <div>
+                        <div class="chat-header-name">PT Bot · Asistente Prodigio</div>
+                        <div class="chat-header-status">
+                            <span class="status-dot"></span> En línea · Respuestas inmediatas
+                        </div>
+                    </div>
+                </div>
+                <button class="chat-close" @onclick="Toggle" aria-label="Cerrar">
+                    <i class="ph ph-x"></i>
+                </button>
+            </div>
+
+            <!-- Messages -->
+            <div class="chat-messages" id="chatMsgs">
+                @foreach (var msg in msgs)
+                {
+                    <div class="chat-msg @(msg.IsUser ? "msg-user" : "msg-bot")">
+                        @if (!msg.IsUser)
+                        {
+                            <div class="msg-avatar"><i class="ph ph-robot"></i></div>
+                        }
+                        <div class="msg-bubble">
+                            @((MarkupString)msg.Text)
+                            <span class="msg-time">@msg.Time</span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Quick Chips -->
+            <div class="chat-quick-chips">
+                <button class="q-chip" @onclick='() => Quick("precotizar")'>💡 Precotizar equipo</button>
+                <button class="q-chip" @onclick='() => Quick("financiamiento")'>💳 Financiamiento Fiao</button>
+                <button class="q-chip" @onclick='() => Quick("tradein")'>🔄 Trade-In</button>
+                <button class="q-chip" @onclick='() => Quick("garantia")'>🛡️ Garantía</button>
+                <button class="q-chip" @onclick='() => Quick("asesor")'>👤 Hablar con asesor</button>
+            </div>
+
+            <!-- Input -->
+            <div class="chat-input-row">
+                <input type="text" class="chat-input"
+                       placeholder="Escribe tu consulta o presupuesto…"
+                       @bind="inputText"
+                       @bind:event="oninput"
+                       @onkeyup="OnKey" />
+                <button class="chat-send-btn" @onclick="Send" disabled="@string.IsNullOrWhiteSpace(inputText)">
+                    <i class="ph ph-paper-plane-right"></i>
+                </button>
+            </div>
+
+        </div>
+    }
+
+    <!-- WhatsApp FAB -->
+    <button class="wa-fab" @onclick="Toggle" title="Chat & Asistencia Prodigio Tecnológico">
+        @if (isOpen)
+        {
+            <i class="ph ph-x"></i>
+        }
+        else
+        {
+            <i class="ph ph-whatsapp-logo"></i>
+            <span class="wa-fab-pulse"></span>
+        }
+    </button>
+</div>
+
+@code {
+    private bool isOpen = false;
+    private string inputText = "";
+
+    public class Msg
+    {
+        public string Text { get; set; } = "";
+        public bool IsUser { get; set; }
+        public string Time { get; set; } = DateTime.Now.ToString("HH:mm");
+    }
+
+    private List<Msg> msgs = new();
+
+    private void Toggle()
+    {
+        isOpen = !isOpen;
+        if (isOpen && msgs.Count == 0)
+        {
+            msgs.Add(new Msg
+            {
+                IsUser = false,
+                Text = "👋 ¡Hola! Soy <b>PT Bot</b>, el asistente de <b>Prodigio Tecnológico</b>.<br/><br/>" +
+                       "Puedo ayudarte con:<br/>" +
+                       "• 💡 Precotización por presupuesto<br/>" +
+                       "• 💳 Planes de Financiamiento Fiao<br/>" +
+                       "• 🔄 Valuación Trade-In de tu celular<br/>" +
+                       "• 🛡️ Información sobre garantías<br/><br/>" +
+                       "Escribe tu presupuesto o selecciona una opción:"
+            });
+        }
+    }
+
+    private void OnKey(KeyboardEventArgs e) { if (e.Key == "Enter") Send(); }
+
+    private void Send()
+    {
+        if (string.IsNullOrWhiteSpace(inputText)) return;
+        var text = inputText.Trim();
+        inputText = "";
+        msgs.Add(new Msg { IsUser = true, Text = text });
+        BotReply(text);
+    }
+
+    private void Quick(string key)
+    {
+        string q = key switch
+        {
+            "precotizar"    => "Quiero precotizar un equipo",
+            "financiamiento"=> "¿Cómo funciona el Financiamiento Fiao?",
+            "tradein"       => "¿Cuánto vale mi celular en Trade-In?",
+            "garantia"      => "¿Cómo funciona la garantía de 12 meses?",
+            "asesor"        => "Quiero hablar con un asesor",
+            _               => key
+        };
+        msgs.Add(new Msg { IsUser = true, Text = q });
+        BotReply(key);
+    }
+
+    private void BotReply(string q)
+    {
+        var lq = q.ToLower();
+        string reply;
+
+        if (lq == "precotizar" || lq.Contains("precotiz") || lq.Contains("cotiz"))
+        {
+            reply = "💡 <b>Módulo de Precotización</b><br/>Escribe tu presupuesto en pesos (ej: <i>25000</i>) y te recomendaré equipos con su cuota estimada.<br/><br/>También puedes usar la <a href='/cotizador' style='color:var(--sage-300);font-weight:700;'>Calculadora Interactiva →</a>";
+        }
+        else if (lq == "financiamiento" || lq.Contains("financiam") || lq.Contains("fiao") || lq.Contains("cuota"))
+        {
+            reply = "💳 <b>Financiamiento Fiao:</b><br/>• Inicial desde el <b>20%</b> del precio<br/>• Plazos: 3, 6 o 12 meses<br/>• Cuotas quincenales o mensuales<br/>• Aprobación inmediata con tu cédula<br/>• Sin historial crediticio negativo<br/><br/>👉 Usa la <a href='/cotizador' style='color:var(--sage-300);font-weight:700;'>Calculadora de Cuotas →</a>";
+        }
+        else if (lq == "tradein" || lq.Contains("trade") || lq.Contains("cambio") || lq.Contains("usado"))
+        {
+            reply = "🔄 <b>Trade-In Prodigio:</b><br/>Recibimos tu celular usado como parte de pago.<br/><br/>💰 <b>Bono adicional:</b> +$2,000 RD$ sobre la tasación de mercado.<br/><br/>Marcas aceptadas: Apple, Samsung, Xiaomi, Motorola y más.<br/><br/>Escríbenos para valuar tu equipo: <a href='https://wa.me/18095550199?text=Hola,%20quiero%20hacer%20Trade-In' target='_blank' style='color:#25D366;font-weight:700;'>WhatsApp →</a>";
+        }
+        else if (lq == "garantia" || lq.Contains("garantia") || lq.Contains("garantía"))
+        {
+            reply = "🛡️ <b>Garantía Escrita de 12 Meses:</b><br/>Todos los equipos Grado A+ incluyen:<br/>• Certificado físico de garantía<br/>• Cobertura en hardware y software<br/>• Servicio técnico en tienda sin costo<br/>• Sin letra pequeña ni cargos ocultos<br/><br/>Garantía válida en nuestra tienda de Santo Domingo.";
+        }
+        else if (lq == "asesor" || lq.Contains("asesor") || lq.Contains("humano") || lq.Contains("persona") || lq.Contains("whatsapp"))
+        {
+            reply = "👤 <b>Contactar un Asesor:</b><br/>Nuestro equipo de ventas está disponible Lun–Sáb 9am–8pm.<br/><br/>🟢 <a href='https://wa.me/18095550199?text=Hola%20Prodigio%20Tecnológico,%20necesito%20asesoría' target='_blank' style='color:#25D366;font-weight:700;'>Abrir WhatsApp: +1 (809) 555-0199 →</a>";
+        }
+        else if (System.Text.RegularExpressions.Regex.IsMatch(lq, @"\d{4,}"))
+        {
+            var m = System.Text.RegularExpressions.Regex.Match(lq, @"\d+");
+            if (int.TryParse(m.Value, out int budget))
+            {
+                if (budget < 15000)
+                    reply = $"📊 <b>Para ${budget:N0} RD$:</b><br/>• 📱 Tecno Spark 20 Pro+ – $13,900 RD$ (Cuota: ~$1,390/mes)<br/>• 📱 Infinix Hot 40 Pro – $11,900 RD$ (Cuota: ~$1,190/mes)<br/><br/>👉 <a href='/tienda' style='color:var(--sage-300);font-weight:700;'>Ver todos los equipos →</a>";
+                else if (budget < 35000)
+                    reply = $"📊 <b>Para ${budget:N0} RD$:</b><br/>• 📱 iPhone 13 (128GB) – $29,500 RD$ (Cuota: ~$2,950/mes)<br/>• 📱 Samsung Galaxy S23 FE – $28,900 RD$ (Cuota: ~$2,890/mes)<br/>• 📱 Tecno Camon 30 Pro 5G – $18,500 RD$<br/><br/>👉 <a href='/tienda' style='color:var(--sage-300);font-weight:700;'>Ver todos los equipos →</a>";
+                else
+                    reply = $"📊 <b>Para ${budget:N0} RD$:</b><br/>• 📱 iPhone 15 Pro Max (256GB) – $62,500 RD$ (Cuota: ~$6,250/mes)<br/>• 📱 Samsung Galaxy S24 Ultra – $68,000 RD$<br/>• 📱 iPhone 14 Pro – $44,900 RD$<br/><br/>👉 <a href='/tienda' style='color:var(--sage-300);font-weight:700;'>Ver todos los equipos →</a>";
+            }
+            else
+                reply = "Por favor escribe tu presupuesto en pesos RD (ej: <i>25000</i>, <i>45000</i>) para que pueda recomendarte equipos.";
+        }
+        else
+        {
+            reply = "Entendido. Para darte la mejor asesoría puedo ayudarte a:<br/>• Buscar un equipo por presupuesto (escríbelo en pesos)<br/>• Explicar el Financiamiento Fiao<br/>• Estimar tu Trade-In<br/>• Conectar con un asesor por <a href='https://wa.me/18095550199' target='_blank' style='color:#25D366;font-weight:700;'>WhatsApp →</a>";
+        }
+
+        msgs.Add(new Msg { IsUser = false, Text = reply });
+    }
+}
