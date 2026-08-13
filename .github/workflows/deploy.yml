@@ -30,6 +30,20 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          framework = Path('output/wwwroot/_framework')
+          aliases = {
+              'blazor.webassembly.js': 'blazor.webassembly.*.js',
+              'dotnet.js': 'dotnet.*.js',
+              'dotnet.runtime.js': 'dotnet.runtime.*.js',
+              'dotnet.native.js': 'dotnet.native.*.js',
+          }
+          for alias, pattern in aliases.items():
+              target = framework / alias
+              if not target.exists():
+                  matches = sorted(framework.glob(pattern))
+                  if matches:
+                      target.write_bytes(matches[0].read_bytes())
+
           for rel in [Path('output/wwwroot/index.html'), Path('output/wwwroot/404.html')]:
               if rel.exists():
                   text = rel.read_text(encoding='utf-8')
