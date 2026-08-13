@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prodigio Tecnológico - Gestión e Información</title>
+    <base href="/" />
+    <link href="_framework/dotnet.mt52ig0i9l.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-+pv2CouiZdt1CeRRrDy/gc2v5U8Nf9k7sN6SJZ3Vw8s=" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/style.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="ProdigioApp.styles.css" rel="stylesheet" />
+    <script type="importmap">{
+  "imports": {
+    "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.958z1vx7fr.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.mt52ig0i9l.js",
+    "./_framework/dotnet.native.js": "./_framework/dotnet.native.puryxhmhq9.js",
+    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.web2r9gqbh.js"
+  },
+  "scopes": {},
+  "integrity": {
+    "./_framework/blazor.webassembly.958z1vx7fr.js": "sha256-A59Tr9HqEhHMu8kU7kruLI9ayw5MRS6Lvc6z7jCbghk=",
+    "./_framework/blazor.webassembly.js": "sha256-A59Tr9HqEhHMu8kU7kruLI9ayw5MRS6Lvc6z7jCbghk=",
+    "./_framework/dotnet.js": "sha256-+pv2CouiZdt1CeRRrDy/gc2v5U8Nf9k7sN6SJZ3Vw8s=",
+    "./_framework/dotnet.mt52ig0i9l.js": "sha256-+pv2CouiZdt1CeRRrDy/gc2v5U8Nf9k7sN6SJZ3Vw8s=",
+    "./_framework/dotnet.native.js": "sha256-gQbHHzCnWx8iDOC65EKbql7bEltJkfao7lmkAbIRajw=",
+    "./_framework/dotnet.native.puryxhmhq9.js": "sha256-gQbHHzCnWx8iDOC65EKbql7bEltJkfao7lmkAbIRajw=",
+    "./_framework/dotnet.runtime.js": "sha256-SOUHEQ3FhDAibBSR2u90NWZpoBjPuWRmH0BAATUlhJU=",
+    "./_framework/dotnet.runtime.web2r9gqbh.js": "sha256-SOUHEQ3FhDAibBSR2u90NWZpoBjPuWRmH0BAATUlhJU="
+  }
+}</script>
+</head>
+
+<body>
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        window.generateCotizacionPdf = function (data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Header Color Banner
+            doc.setFillColor(15, 23, 42); // Dark Slate #0f172a
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            // Title in Header
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont('helvetica', 'bold');
+            doc.text("PRODIGIO TECNOLÓGICO", 14, 22);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text("Donde tú eres el valor | Cotización Oficial", 14, 30);
+            
+            // Folio and Date
+            doc.setFontSize(10);
+            doc.text(`Cotización #: PT-${Math.floor(100000 + Math.random() * 900000)}`, 140, 20);
+            doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, 140, 27);
+            doc.text(`Válido por: 15 días`, 140, 34);
+
+            // Client & Device Box
+            doc.setTextColor(30, 41, 59);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text("INFORMACIÓN DEL CLIENTE Y DISPOSITIVO", 14, 52);
+            
+            doc.setDrawColor(226, 232, 240);
+            doc.setFillColor(248, 250, 252);
+            doc.roundedRect(14, 56, 182, 38, 3, 3, 'FD');
+            
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text("Cliente:", 20, 66);
+            doc.text("Teléfono / WhatsApp:", 20, 74);
+            doc.text("Equipo:", 20, 82);
+            doc.text("Problema / Diagnóstico:", 20, 90);
+            
+            doc.setFont('helvetica', 'normal');
+            doc.text(data.clienteNombre || "Cliente General", 65, 66);
+            doc.text(data.clienteTelefono || "No especificado", 65, 74);
+            doc.text(`${data.equipoMarca || ""} ${data.equipoModelo || "Dispositivo Móvil"}`, 65, 82);
+            doc.text(data.diagnostico || "Mantenimiento General", 65, 90);
+
+            // Table Header
+            let y = 105;
+            doc.setFillColor(79, 70, 229); // Accent Indigo
+            doc.rect(14, y, 182, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.text("CONCEPTO / REPARACIÓN / PIEZA", 20, y + 7);
+            doc.text("GARANTÍA", 130, y + 7);
+            doc.text("COSTO EST.", 170, y + 7);
+
+            // Table Rows
+            y += 10;
+            doc.setTextColor(30, 41, 59);
+            doc.setFont('helvetica', 'normal');
+            
+            const servicios = data.items || [
+                { concepto: data.diagnostico || "Reparación General", garantia: "6 Meses", costo: data.total || 0 }
+            ];
+
+            servicios.forEach((item, idx) => {
+                if (idx % 2 === 0) {
+                    doc.setFillColor(241, 245, 249);
+                    doc.rect(14, y, 182, 10, 'F');
+                }
+                doc.text(item.concepto, 20, y + 7);
+                doc.text(item.garantia, 130, y + 7);
+                doc.text(`$${Number(item.costo).toLocaleString('es-DO')} RD$`, 170, y + 7);
+                y += 10;
+            });
+
+            // Total Block
+            y += 5;
+            doc.setDrawColor(79, 70, 229);
+            doc.setLineWidth(0.8);
+            doc.line(14, y, 196, y);
+            y += 10;
+            
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.text("TOTAL ESTIMADO:", 120, y);
+            doc.setTextColor(79, 70, 229);
+            doc.setFontSize(14);
+            doc.text(`$${Number(data.total || 0).toLocaleString('es-DO')} RD$`, 165, y);
+
+            // Notes & Footer
+            y += 25;
+            doc.setTextColor(100, 116, 139);
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.text("* Todos los repuestos utilizados en Prodigio Tecnológico son 100% originales o grado OEM con garantía por escrito.", 14, y);
+            doc.text("* Esta cotización incluye mano de obra, revisión inicial sin costo adicional e impuestos aplicables.", 14, y + 6);
+            
+            y += 25;
+            doc.setDrawColor(203, 213, 225);
+            doc.line(14, y, 90, y);
+            doc.line(120, y, 196, y);
+            
+            doc.setFontSize(9);
+            doc.text("Firma Asesor Técnico", 35, y + 5);
+            doc.text("Firma / Aceptación del Cliente", 135, y + 5);
+
+            // Download trigger
+            doc.save(`Cotizacion_Prodigio_${data.clienteNombre ? data.clienteNombre.replace(/\s+/g, '_') : 'Cliente'}.pdf`);
+        };
+    </script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <script>
+        if (window.Blazor) {
+            Blazor.start().catch(function (error) {
+                console.error("Blazor start error:", error);
+                if (error && error.toString().includes("Failed to fetch dynamically imported module")) {
+                    console.log("Stale WebAssembly module detected. Clearing cache and reloading...");
+                    if ('caches' in window) {
+                        caches.keys().then(function (names) {
+                            for (let name of names) caches.delete(name);
+                        });
+                    }
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
