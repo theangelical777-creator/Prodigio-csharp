@@ -1,5 +1,5 @@
 [build]
-  command = "dotnet publish -c Release -o output"
+  command = "bash build.sh"
   publish = "output/wwwroot"
 
 [[redirects]]
