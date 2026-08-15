@@ -2,6 +2,8 @@
 @page "/calculadora"
 @page "/financiamiento"
 
+@inject IJSRuntime JsRuntime
+
 <PageTitle>Calculadora de Cuotas Fiao – Prodigio Tecnológico</PageTitle>
 
 <!-- PAGE HERO -->
@@ -22,6 +24,19 @@
 <section class="page-section" style="background:var(--bg-page);">
     <div class="section-inner">
 
+        <!-- TABS NAVIGATION -->
+        <div class="cotizador-tabs">
+            <button class="tab-button @(activeTab == "calculadora" ? "active" : "")" @onclick='() => activeTab = "calculadora"'>
+                <i class="ph ph-calculator"></i> Calculadora
+            </button>
+            <button class="tab-button @(activeTab == "facturacion" ? "active" : "")" @onclick='() => activeTab = "facturacion"'>
+                <i class="ph ph-receipt"></i> Facturación
+            </button>
+        </div>
+
+        <!-- TAB CONTENT: CALCULADORA -->
+        @if (activeTab == "calculadora")
+        {
         <div class="cotizador-grid">
 
             <!-- LEFT: Calculator Form -->
@@ -177,10 +192,179 @@
             </div>
 
         </div>
+        } <!-- FIN CALCULADORA TAB -->
+
+        <!-- TAB CONTENT: FACTURACIÓN -->
+        @if (activeTab == "facturacion")
+        {
+        <div class="facturacion-form-wrapper">
+            <div class="form-card">
+                <span class="section-label">Sistema de Facturación</span>
+                <h2 class="section-title mb-6" style="font-size:1.5rem;">Gestión Profesional de Facturas</h2>
+
+                <!-- SECTION 1: DATOS DEL CLIENTE -->
+                <div class="factura-section">
+                    <div class="factura-section-header">
+                        <span class="section-number">1</span>
+                        <h3>Datos del Cliente</h3>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nombre del Cliente / Razón Social</label>
+                            <input type="text" class="form-input" placeholder="Ej: Juan Pérez o Tech Solutions SRL" @bind="facturaClienteNombre" required />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">RNC / Cédula</label>
+                            <input type="text" class="form-input" placeholder="Ej: 1-31-12345-6" @bind="facturaClienteRNC" required />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-input" placeholder="cliente@correo.com" @bind="facturaClienteEmail" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Teléfono</label>
+                            <input type="tel" class="form-input" placeholder="809-555-0101" @bind="facturaClienteTel" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-input" placeholder="Av. Principal #123, Santo Domingo" @bind="facturaClienteDireccion" />
+                    </div>
+                </div>
+
+                <!-- SECTION 2: DETALLES DEL COMPROBANTE -->
+                <div class="factura-section">
+                    <div class="factura-section-header">
+                        <span class="section-number">2</span>
+                        <h3>Detalles del Comprobante</h3>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Número de Factura</label>
+                            <input type="text" class="form-input" readonly style="background: var(--sage-100); font-weight: bold; color: var(--sage-700);" @bind="numeroFactura" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Estado de Factura</label>
+                            <select class="form-input">
+                                <option>Borrador</option>
+                                <option>Emitida</option>
+                                <option>Pagada</option>
+                                <option>Cancelada</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Fecha de Emisión</label>
+                            <input type="date" class="form-input" @bind="fechaEmision" required />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fecha de Vencimiento</label>
+                            <input type="date" class="form-input" @bind="fechaVencimiento" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: ARTÍCULOS / SERVICIOS -->
+                <div class="factura-section">
+                    <div class="factura-section-header" style="justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="section-number">3</span>
+                            <h3>Artículos / Servicios</h3>
+                        </div>
+                        <button type="button" class="btn btn-sm" style="background: var(--sage-600); color: white; border: none; cursor: pointer;" @onclick="AgregarItemFactura">
+                            <i class="ph ph-plus-circle"></i> Agregar Artículo
+                        </button>
+                    </div>
+
+                    <div class="items-table">
+                        <div class="item-header">
+                            <div class="col-desc">Descripción</div>
+                            <div class="col-qty">Cant.</div>
+                            <div class="col-price">Precio Unit.</div>
+                            <div class="col-total">Total</div>
+                            <div class="col-action"></div>
+                        </div>
+                        
+                        @foreach (var item in facturasItems)
+                        {
+                            var idx = facturasItems.IndexOf(item);
+                            <div class="item-row">
+                                <div class="col-desc">
+                                    <input type="text" class="form-input" style="height: 38px;" placeholder="Ej: Reparación de pantalla iPhone 13" @bind="item.Descripcion" required />
+                                </div>
+                                <div class="col-qty">
+                                    <input type="number" class="form-input" style="height: 38px;" min="1" @bind="item.Cantidad" @bind:after="CalcularTotalesFactura" required />
+                                </div>
+                                <div class="col-price">
+                                    <input type="number" class="form-input" style="height: 38px;" step="0.01" min="0" @bind="item.PrecioUnitario" @bind:after="CalcularTotalesFactura" required />
+                                </div>
+                                <div class="col-total">
+                                    <span class="item-total">RD$ @(item.Subtotal).ToString("N2")</span>
+                                </div>
+                                <div class="col-action">
+                                    <button type="button" class="btn btn-danger btn-icon btn-sm" @onclick="() => QuitarItemFactura(idx)" title="Eliminar">
+                                        <i class="ph ph-trash-simple"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- TOTALES -->
+                <div class="totales-factura">
+                    <div class="total-item">
+                        <span>Subtotal:</span>
+                        <strong style="color: var(--sage-600);">RD$ @SubtotalFactura.ToString("N2")</strong>
+                    </div>
+                    <div class="total-item">
+                        <span>ITBIS (18%):</span>
+                        <strong style="color: var(--sage-600);">RD$ @ITBISFactura.ToString("N2")</strong>
+                    </div>
+                    <div class="total-item highlight-total">
+                        <span><strong>Total General:</strong></span>
+                        <strong style="font-size: 1.2rem;">RD$ @TotalFactura.ToString("N2")</strong>
+                    </div>
+                </div>
+
+                <!-- NOTAS -->
+                <div class="factura-section">
+                    <label class="form-label">Notas / Comentarios Internos</label>
+                    <textarea class="form-input" style="height: 100px; resize: vertical; padding: 12px;" placeholder="Escribe notas de la factura aquí..." @bind="notasFactura"></textarea>
+                </div>
+
+                <!-- ACCIONES -->
+                <div class="factura-actions">
+                    <button type="button" class="btn" style="background: var(--blue-600); color: white; border: none; cursor: pointer;" @onclick="GuardarFactura">
+                        <i class="ph ph-floppy-disk"></i> Guardar Factura
+                    </button>
+                    <button type="button" class="btn" style="background: var(--sage-600); color: white; border: none; cursor: pointer;" @onclick="DescargarPdf">
+                        <i class="ph ph-download"></i> Descargar PDF
+                    </button>
+                    <button type="button" class="btn" style="background: var(--wa-green); color: white; border: none; cursor: pointer;" @onclick="EnviarPorWhatsApp">
+                        <i class="ph ph-whatsapp-logo"></i> Enviar por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </div>
+        } <!-- FIN FACTURACIÓN TAB -->
+
     </div>
 </section>
 
 @code {
+    // TAB MANAGEMENT
+    private string activeTab = "calculadora";
+
+    // CALCULADORA VARIABLES
     private decimal precio = 35000;
     private int pct = 30;
     private int plazo = 6;
@@ -192,11 +376,39 @@
     private bool acepto = false;
     private bool enviado = false;
 
+    // FACTURACIÓN VARIABLES
+    private string facturaClienteNombre = "";
+    private string facturaClienteRNC = "";
+    private string facturaClienteEmail = "";
+    private string facturaClienteTel = "";
+    private string facturaClienteDireccion = "";
+    
+    private string numeroFactura = "";
+    private DateTime fechaEmision = DateTime.Today;
+    private DateTime fechaVencimiento = DateTime.Today.AddDays(30);
+    private string notasFactura = "";
+    
+    private List<ItemFactura> facturasItems = new();
+
+    private class ItemFactura
+    {
+        public string Descripcion { get; set; } = "";
+        public decimal Cantidad { get; set; } = 1;
+        public decimal PrecioUnitario { get; set; } = 0;
+        public decimal Subtotal => Cantidad * PrecioUnitario;
+    }
+
+    // CALCULADORA COMPUTED PROPERTIES
     private decimal inicial => precio * pct / 100m;
     private decimal financiado => precio - inicial;
     private int totalCuotas => frec == "Quincenal" ? plazo * 2 : plazo;
     private decimal cuota => totalCuotas > 0 ? Math.Ceiling(financiado / totalCuotas) : 0;
     private decimal totalPagar => inicial + cuota * totalCuotas;
+
+    // FACTURACIÓN COMPUTED PROPERTIES
+    private decimal SubtotalFactura => facturasItems.Sum(a => a.Subtotal);
+    private decimal ITBISFactura => SubtotalFactura * 0.18m;
+    private decimal TotalFactura => SubtotalFactura + ITBISFactura;
 
     public record Modelo(string Nombre, int Precio);
     private List<Modelo> equipos = new()
@@ -212,7 +424,12 @@
         new("Motorola Edge 40 Neo",        16800),
     };
 
-    protected override void OnInitialized() => Calc();
+    protected override void OnInitialized()
+    {
+        Calc();
+        facturasItems.Add(new ItemFactura());
+        numeroFactura = GenerarNumeroFactura();
+    }
 
     private void Calc()
     {
@@ -224,5 +441,127 @@
     private void Enviar()
     {
         enviado = true;
+    }
+
+    // FACTURACIÓN METHODS
+    private void AgregarItemFactura()
+    {
+        facturasItems.Add(new ItemFactura());
+    }
+
+    private void QuitarItemFactura(int index)
+    {
+        if (facturasItems.Count > 1)
+        {
+            facturasItems.RemoveAt(index);
+            CalcularTotalesFactura();
+        }
+    }
+
+    private void CalcularTotalesFactura()
+    {
+        StateHasChanged();
+    }
+
+    // MÉTODOS DE FACTURACIÓN - ACCIONES
+    private async Task GuardarFactura()
+    {
+        // Validar datos mínimos
+        if (string.IsNullOrWhiteSpace(facturaClienteNombre) || facturasItems.Count == 0)
+        {
+            await MostrarToast("Completa los datos del cliente y agrega artículos", "error");
+            return;
+        }
+
+        var itemsValidos = facturasItems.Where(i => !string.IsNullOrWhiteSpace(i.Descripcion)).ToList();
+        if (itemsValidos.Count == 0)
+        {
+            await MostrarToast("Agrega al menos un artículo a la factura", "error");
+            return;
+        }
+
+        await MostrarToast($"Factura {numeroFactura} guardada exitosamente ✓", "success");
+        // Aquí iría la lógica para guardar en base de datos
+    }
+
+    private async Task DescargarPdf()
+    {
+        try
+        {
+            // Validar datos
+            if (string.IsNullOrWhiteSpace(facturaClienteNombre) || facturasItems.Count == 0)
+            {
+                await MostrarToast("Completa los datos del cliente", "error");
+                return;
+            }
+
+            // Preparar items para el PDF
+            var itemsPdf = facturasItems
+                .Where(i => !string.IsNullOrWhiteSpace(i.Descripcion))
+                .ToList();
+
+            if (itemsPdf.Count == 0)
+            {
+                await MostrarToast("Agrega al menos un artículo", "error");
+                return;
+            }
+
+            // Preparar objeto factura para jsPDF
+            var facturaPdf = new
+            {
+                numeroFactura = numeroFactura,
+                clienteNombre = facturaClienteNombre,
+                clienteRNC = facturaClienteRNC,
+                clienteEmail = facturaClienteEmail,
+                clienteTel = facturaClienteTel,
+                clienteDireccion = facturaClienteDireccion,
+                fechaEmision = fechaEmision.ToString("dd/MM/yyyy"),
+                fechaVencimiento = fechaVencimiento.ToString("dd/MM/yyyy"),
+                notas = notasFactura,
+                items = itemsPdf.Select(i => new
+                {
+                    descripcion = i.Descripcion,
+                    cantidad = i.Cantidad,
+                    precioUnitario = i.PrecioUnitario
+                }).ToList()
+            };
+
+            // Generar PDF con jsPDF
+            await JsRuntime.InvokeVoidAsync("generarPdfFactura", facturaPdf);
+            await MostrarToast("PDF generado y descargado ✓", "success");
+        }
+        catch (Exception ex)
+        {
+            await MostrarToast($"Error al generar PDF: {ex.Message}", "error");
+        }
+    }
+
+    private async Task EnviarPorWhatsApp()
+    {
+        // Validar datos
+        if (string.IsNullOrWhiteSpace(facturaClienteTel))
+        {
+            await MostrarToast("Agrega un número de teléfono para el cliente", "error");
+            return;
+        }
+
+        var mensaje = $"Hola {facturaClienteNombre}, tu factura {numeroFactura} está lista. Total: RD$ {TotalFactura:N2}";
+        var telefono = facturaClienteTel.Replace("-", "").Replace(" ", "");
+        var url = $"https://wa.me/{telefono}?text=" + Uri.EscapeDataString(mensaje);
+        
+        await JsRuntime.InvokeVoidAsync("open", url, "_blank");
+        await MostrarToast("Abriendo WhatsApp...", "info");
+    }
+
+    // Método auxiliar para mostrar toasts
+    private async Task MostrarToast(string message, string type = "info")
+    {
+        await JsRuntime.InvokeVoidAsync("showToast", message, type);
+    }
+
+    // Generar número de factura único
+    private string GenerarNumeroFactura()
+    {
+        return $"{DateTime.Now:yyyyMMdd}{new Random().Next(1000, 9999)}";
     }
 }
