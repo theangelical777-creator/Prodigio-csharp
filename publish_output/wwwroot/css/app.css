@@ -2689,3 +2689,40 @@ ul, ol { list-style: none; }
         grid-template-columns: 1fr;
     }
 }
+
+/* Botón "Proceder a la Compra" */
+.btn-proceed-checkout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 20px;
+    margin-top: 24px;
+    background: linear-gradient(135deg, var(--sage-600), var(--sage-500));
+    color: white;
+    border: none;
+    border-radius: var(--r-md);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(108, 156, 138, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-proceed-checkout:hover {
+    background: linear-gradient(135deg, var(--sage-700), var(--sage-600));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(108, 156, 138, 0.35);
+}
+
+.btn-proceed-checkout:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(108, 156, 138, 0.2);
+}
+
+.btn-proceed-checkout i {
+    font-size: 18px;
+}

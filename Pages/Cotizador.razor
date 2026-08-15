@@ -293,24 +293,34 @@
                             <div class="col-action"></div>
                         </div>
                         
-                        @foreach (var item in facturasItems)
+                        @if (facturasItems.Count == 0)
                         {
-                            var idx = facturasItems.IndexOf(item);
-                            <div class="item-row">
+                            <div style="padding: 20px; text-align: center; color: var(--text-400); font-style: italic;">
+                                Haz clic en "Agregar Artículo" para comenzar
+                            </div>
+                        }
+                        
+                        @for (int i = 0; i < facturasItems.Count; i++)
+                        {
+                            var item = facturasItems[i];
+                            <div class="item-row" @key="i">
                                 <div class="col-desc">
-                                    <input type="text" class="form-input" style="height: 38px;" placeholder="Ej: Reparación de pantalla iPhone 13" @bind="item.Descripcion" required />
+                                    <input type="text" class="form-input" style="height: 38px;" placeholder="Ej: Reparación de pantalla iPhone 13" 
+                                           @bind="facturasItems[i].Descripcion" @bind:event="oninput" @bind:after="CalcularTotalesFactura" required />
                                 </div>
                                 <div class="col-qty">
-                                    <input type="number" class="form-input" style="height: 38px;" min="1" @bind="item.Cantidad" @bind:after="CalcularTotalesFactura" required />
+                                    <input type="number" class="form-input" style="height: 38px;" min="1" 
+                                           @bind="facturasItems[i].Cantidad" @bind:event="oninput" @bind:after="CalcularTotalesFactura" required />
                                 </div>
                                 <div class="col-price">
-                                    <input type="number" class="form-input" style="height: 38px;" step="0.01" min="0" @bind="item.PrecioUnitario" @bind:after="CalcularTotalesFactura" required />
+                                    <input type="number" class="form-input" style="height: 38px;" step="0.01" min="0" 
+                                           @bind="facturasItems[i].PrecioUnitario" @bind:event="oninput" @bind:after="CalcularTotalesFactura" required />
                                 </div>
                                 <div class="col-total">
-                                    <span class="item-total">RD$ @(item.Subtotal).ToString("N2")</span>
+                                    <span class="item-total">RD$ @(facturasItems[i].Subtotal).ToString("N2")</span>
                                 </div>
                                 <div class="col-action">
-                                    <button type="button" class="btn-delete-item" @onclick="() => QuitarItemFactura(idx)" title="Eliminar">
+                                    <button type="button" class="btn-delete-item" @onclick="() => QuitarItemFactura(i)" title="Eliminar">
                                         <i class="ph ph-trash-simple"></i>
                                     </button>
                                 </div>
@@ -356,6 +366,11 @@
                         <i class="ph ph-whatsapp-logo"></i> Enviar por WhatsApp
                     </button>
                 </div>
+
+                <!-- BOTÓN PROCEDER A LA COMPRA -->
+                <button type="button" class="btn-proceed-checkout" @onclick="ProcederALaCompra">
+                    <i class="ph ph-check-circle"></i> Proceder a la Compra
+                </button>
             </div>
         </div>
         } <!-- FIN FACTURACIÓN TAB -->
@@ -450,20 +465,34 @@
     private void AgregarItemFactura()
     {
         facturasItems.Add(new ItemFactura());
+        StateHasChanged();
     }
 
     private void QuitarItemFactura(int index)
     {
-        if (facturasItems.Count > 1)
+        if (index >= 0 && index < facturasItems.Count)
         {
-            facturasItems.RemoveAt(index);
-            CalcularTotalesFactura();
+            if (facturasItems.Count > 1)
+            {
+                facturasItems.RemoveAt(index);
+                CalcularTotalesFactura();
+            }
+            else
+            {
+                MostrarToastSync("Debe mantener al menos un artículo", "error");
+            }
         }
     }
 
     private void CalcularTotalesFactura()
     {
         StateHasChanged();
+    }
+
+    // Versión síncrona de mostrar toast para métodos no-async
+    private void MostrarToastSync(string message, string type = "info")
+    {
+        _ = MostrarToast(message, type);
     }
 
     // MÉTODOS DE FACTURACIÓN - ACCIONES
@@ -566,5 +595,55 @@
     private string GenerarNumeroFactura()
     {
         return $"{DateTime.Now:yyyyMMdd}{new Random().Next(1000, 9999)}";
+    }
+
+    // PROCEDER A LA COMPRA - Validación integral
+    private async Task ProcederALaCompra()
+    {
+        // Validar cliente
+        if (string.IsNullOrWhiteSpace(facturaClienteNombre))
+        {
+            await MostrarToast("❌ Ingresa el nombre del cliente", "error");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(facturaClienteRNC))
+        {
+            await MostrarToast("❌ Ingresa el RNC o Cédula del cliente", "error");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(facturaClienteTel))
+        {
+            await MostrarToast("❌ Ingresa el teléfono del cliente", "error");
+            return;
+        }
+
+        // Validar artículos
+        if (facturasItems.Count == 0)
+        {
+            await MostrarToast("❌ Agrega al menos un artículo", "error");
+            return;
+        }
+
+        var itemsValidos = facturasItems
+            .Where(i => !string.IsNullOrWhiteSpace(i.Descripcion) && i.PrecioUnitario > 0)
+            .ToList();
+
+        if (itemsValidos.Count == 0)
+        {
+            await MostrarToast("❌ Todos los artículos deben tener descripción y precio", "error");
+            return;
+        }
+
+        // Todo validado - Proceder
+        await MostrarToast("✓ Procesando factura...", "info");
+        
+        // Guardar automáticamente
+        await GuardarFactura();
+        
+        // Descargar PDF automáticamente
+        await Task.Delay(500);
+        await DescargarPdf();
     }
 }
