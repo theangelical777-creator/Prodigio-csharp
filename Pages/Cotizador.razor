@@ -302,25 +302,28 @@
                         
                         @for (int i = 0; i < facturasItems.Count; i++)
                         {
-                            var item = facturasItems[i];
-                            <div class="item-row" @key="i">
+                            var itemIndex = i;
+                            <div class="item-row" @key="itemIndex">
                                 <div class="col-desc">
                                     <input type="text" class="form-input" style="height: 38px;" placeholder="Ej: Reparación de pantalla iPhone 13" 
-                                           @bind="facturasItems[i].Descripcion" @bind:event="oninput" @bind:after="CalcularTotalesFactura" required />
+                                           value="@facturasItems[itemIndex].Descripcion" 
+                                           @onchange="@((ChangeEventArgs e) => ActualizarDescripcion(itemIndex, e.Value?.ToString() ?? ""))" />
                                 </div>
                                 <div class="col-qty">
                                     <input type="number" class="form-input" style="height: 38px;" min="1" 
-                                           @bind="facturasItems[i].Cantidad" @bind:event="oninput" @bind:after="CalcularTotalesFactura" required />
+                                           value="@facturasItems[itemIndex].Cantidad" 
+                                           @onchange="@((ChangeEventArgs e) => ActualizarCantidad(itemIndex, e.Value))" />
                                 </div>
                                 <div class="col-price">
                                     <input type="number" class="form-input" style="height: 38px;" step="0.01" min="0" 
-                                           @bind="facturasItems[i].PrecioUnitario" @bind:event="oninput" @bind:after="CalcularTotalesFactura" required />
+                                           value="@facturasItems[itemIndex].PrecioUnitario" 
+                                           @onchange="@((ChangeEventArgs e) => ActualizarPrecio(itemIndex, e.Value))" />
                                 </div>
                                 <div class="col-total">
-                                    <span class="item-total">RD$ @facturasItems[i].Subtotal.ToString("N2")</span>
+                                    <span class="item-total">RD$ @facturasItems[itemIndex].Subtotal.ToString("N2")</span>
                                 </div>
                                 <div class="col-action">
-                                    <button type="button" class="btn-delete-item" @onclick="() => QuitarItemFactura(i)" title="Eliminar">
+                                    <button type="button" class="btn-delete-item" @onclick="() => QuitarItemFactura(itemIndex)" title="Eliminar">
                                         <i class="ph ph-trash-simple"></i>
                                     </button>
                                 </div>
@@ -493,6 +496,40 @@
     private void MostrarToastSync(string message, string type = "info")
     {
         _ = MostrarToast(message, type);
+    }
+
+    // MÉTODOS DE ACTUALIZACIÓN DE ARTÍCULOS
+    private void ActualizarDescripcion(int index, string? valor)
+    {
+        if (index >= 0 && index < facturasItems.Count)
+        {
+            facturasItems[index].Descripcion = valor ?? "";
+            CalcularTotalesFactura();
+        }
+    }
+
+    private void ActualizarCantidad(int index, object? valor)
+    {
+        if (index >= 0 && index < facturasItems.Count)
+        {
+            if (decimal.TryParse(valor?.ToString() ?? "1", out decimal cantidad))
+            {
+                facturasItems[index].Cantidad = Math.Max(1, cantidad);
+                CalcularTotalesFactura();
+            }
+        }
+    }
+
+    private void ActualizarPrecio(int index, object? valor)
+    {
+        if (index >= 0 && index < facturasItems.Count)
+        {
+            if (decimal.TryParse(valor?.ToString() ?? "0", out decimal precio))
+            {
+                facturasItems[index].PrecioUnitario = Math.Max(0, precio);
+                CalcularTotalesFactura();
+            }
+        }
     }
 
     // MÉTODOS DE FACTURACIÓN - ACCIONES
