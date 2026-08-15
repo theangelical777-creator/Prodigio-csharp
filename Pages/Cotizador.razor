@@ -317,7 +317,7 @@
                                            @bind="facturasItems[i].PrecioUnitario" @bind:event="oninput" @bind:after="CalcularTotalesFactura" required />
                                 </div>
                                 <div class="col-total">
-                                    <span class="item-total">RD$ @(facturasItems[i].Subtotal).ToString("N2")</span>
+                                    <span class="item-total">RD$ @facturasItems[i].Subtotal.ToString("N2")</span>
                                 </div>
                                 <div class="col-action">
                                     <button type="button" class="btn-delete-item" @onclick="() => QuitarItemFactura(i)" title="Eliminar">
