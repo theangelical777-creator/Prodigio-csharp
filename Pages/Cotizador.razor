@@ -305,16 +305,19 @@
                             var idx = i;
                             <div class="item-row" @key="idx">
                                 <div class="col-desc">
-                                    <input type="text" class="form-input" style="height: 38px;" placeholder="Ej: Reparación de pantalla iPhone 13" 
-                                           @bind="facturasItems[idx].Descripcion" @bind:after="CalcularTotalesFactura" />
+                                    <input type="text" class="form-input" style="height: 38px;" placeholder="Ej: Reparación de pantalla iPhone 13"
+                                           value="@facturasItems[idx].Descripcion"
+                                           @oninput="@(e => OnInputDescripcion(idx, e))" />
                                 </div>
                                 <div class="col-qty">
-                                    <input type="number" class="form-input" style="height: 38px;" min="1" 
-                                           @bind="facturasItems[idx].Cantidad" @bind:after="CalcularTotalesFactura" />
+                                    <input type="number" class="form-input" style="height: 38px;" min="1"
+                                           value="@facturasItems[idx].Cantidad"
+                                           @oninput="@(e => OnInputCantidad(idx, e))" />
                                 </div>
                                 <div class="col-price">
-                                    <input type="number" class="form-input" style="height: 38px;" step="0.01" min="0" 
-                                           @bind="facturasItems[idx].PrecioUnitario" @bind:after="CalcularTotalesFactura" />
+                                    <input type="number" class="form-input" style="height: 38px;" step="0.01" min="0"
+                                           value="@facturasItems[idx].PrecioUnitario"
+                                           @oninput="@(e => OnInputPrecio(idx, e))" />
                                 </div>
                                 <div class="col-total">
                                     <span class="item-total">RD$ @facturasItems[idx].Subtotal.ToString("N2")</span>
@@ -486,6 +489,44 @@
 
     private void CalcularTotalesFactura()
     {
+        StateHasChanged();
+    }
+
+    // Handlers para actualizar mientras se escribe (oninput)
+    private void OnInputDescripcion(int index, ChangeEventArgs e)
+    {
+        if (index < 0 || index >= facturasItems.Count) return;
+        facturasItems[index].Descripcion = e?.Value?.ToString() ?? string.Empty;
+        StateHasChanged();
+    }
+
+    private void OnInputCantidad(int index, ChangeEventArgs e)
+    {
+        if (index < 0 || index >= facturasItems.Count) return;
+        var raw = e?.Value?.ToString() ?? "";
+        if (decimal.TryParse(raw, out var val))
+        {
+            facturasItems[index].Cantidad = Math.Max(1, val);
+        }
+        else
+        {
+            facturasItems[index].Cantidad = 1;
+        }
+        StateHasChanged();
+    }
+
+    private void OnInputPrecio(int index, ChangeEventArgs e)
+    {
+        if (index < 0 || index >= facturasItems.Count) return;
+        var raw = e?.Value?.ToString() ?? "";
+        if (decimal.TryParse(raw, out var val))
+        {
+            facturasItems[index].PrecioUnitario = Math.Max(0, val);
+        }
+        else
+        {
+            facturasItems[index].PrecioUnitario = 0;
+        }
         StateHasChanged();
     }
 
