@@ -2546,3 +2546,146 @@ ul, ol { list-style: none; }
 
 /* Subscribed badge */
 .badge-subscribed { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.35); color: var(--white); padding: 10px 18px; border-radius: var(--r-pill); font-size: 13.5px; font-weight: 700; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FACTURACIÓN ESTILOS MEJORADOS
+   ═══════════════════════════════════════════════════════════════ */
+
+.factura-section-header-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--sage-300);
+}
+
+.btn-add-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--sage-600);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-add-item:hover {
+    background: var(--sage-700);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 156, 138, 0.2);
+}
+
+.btn-delete-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: #fef2f2;
+    border: 1.5px solid #fed7d7;
+    color: #dc2626;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
+
+.btn-delete-item:hover {
+    background: #fee;
+    border-color: #fc8181;
+    color: #ef4444;
+}
+
+.factura-actions .btn-primary {
+    background: var(--blue-600);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 12px 16px;
+    border-radius: var(--r-md);
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.factura-actions .btn-primary:hover {
+    background: #4f7487;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 142, 161, 0.3);
+}
+
+.factura-actions .btn-success {
+    background: var(--sage-600);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 12px 16px;
+    border-radius: var(--r-md);
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.factura-actions .btn-success:hover {
+    background: var(--sage-700);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 156, 138, 0.3);
+}
+
+.factura-actions .btn-whatsapp {
+    background: var(--wa-green);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 12px 16px;
+    border-radius: var(--r-md);
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.factura-actions .btn-whatsapp:hover {
+    background: #1fa854;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+}
+
+/* Mejora responsiva para mobile */
+@media (max-width: 768px) {
+    .factura-section-header-action {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .btn-add-item {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .factura-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .item-header, .item-row {
+        grid-template-columns: 1fr;
+    }
+}

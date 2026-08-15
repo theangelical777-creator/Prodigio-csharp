@@ -197,9 +197,9 @@
         <!-- TAB CONTENT: FACTURACIÓN -->
         @if (activeTab == "facturacion")
         {
-        <div class="facturacion-form-wrapper">
+        <div class="cotizacion-form-wrapper">
             <div class="form-card">
-                <span class="section-label">Sistema de Facturación</span>
+                <span class="section-label">💼 Sistema de Facturación</span>
                 <h2 class="section-title mb-6" style="font-size:1.5rem;">Gestión Profesional de Facturas</h2>
 
                 <!-- SECTION 1: DATOS DEL CLIENTE -->
@@ -247,7 +247,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Número de Factura</label>
-                            <input type="text" class="form-input" readonly style="background: var(--sage-100); font-weight: bold; color: var(--sage-700);" @bind="numeroFactura" />
+                            <input type="text" class="form-input" readonly style="background: var(--sage-100); font-weight: bold; color: var(--sage-700); cursor: not-allowed;" @bind="numeroFactura" />
                         </div>
                         <div class="form-group">
                             <label class="form-label">Estado de Factura</label>
@@ -274,12 +274,12 @@
 
                 <!-- SECTION 3: ARTÍCULOS / SERVICIOS -->
                 <div class="factura-section">
-                    <div class="factura-section-header" style="justify-content: space-between;">
+                    <div class="factura-section-header-action">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <span class="section-number">3</span>
                             <h3>Artículos / Servicios</h3>
                         </div>
-                        <button type="button" class="btn btn-sm" style="background: var(--sage-600); color: white; border: none; cursor: pointer;" @onclick="AgregarItemFactura">
+                        <button type="button" class="btn-add-item" @onclick="AgregarItemFactura">
                             <i class="ph ph-plus-circle"></i> Agregar Artículo
                         </button>
                     </div>
@@ -310,7 +310,7 @@
                                     <span class="item-total">RD$ @(item.Subtotal).ToString("N2")</span>
                                 </div>
                                 <div class="col-action">
-                                    <button type="button" class="btn btn-danger btn-icon btn-sm" @onclick="() => QuitarItemFactura(idx)" title="Eliminar">
+                                    <button type="button" class="btn-delete-item" @onclick="() => QuitarItemFactura(idx)" title="Eliminar">
                                         <i class="ph ph-trash-simple"></i>
                                     </button>
                                 </div>
@@ -323,11 +323,11 @@
                 <div class="totales-factura">
                     <div class="total-item">
                         <span>Subtotal:</span>
-                        <strong style="color: var(--sage-600);">RD$ @SubtotalFactura.ToString("N2")</strong>
+                        <strong style="color: var(--text-600);">RD$ @SubtotalFactura.ToString("N2")</strong>
                     </div>
                     <div class="total-item">
                         <span>ITBIS (18%):</span>
-                        <strong style="color: var(--sage-600);">RD$ @ITBISFactura.ToString("N2")</strong>
+                        <strong style="color: var(--text-600);">RD$ @ITBISFactura.ToString("N2")</strong>
                     </div>
                     <div class="total-item highlight-total">
                         <span><strong>Total General:</strong></span>
@@ -337,19 +337,22 @@
 
                 <!-- NOTAS -->
                 <div class="factura-section">
-                    <label class="form-label">Notas / Comentarios Internos</label>
+                    <div class="factura-section-header">
+                        <span class="section-number">4</span>
+                        <h3>Notas / Comentarios</h3>
+                    </div>
                     <textarea class="form-input" style="height: 100px; resize: vertical; padding: 12px;" placeholder="Escribe notas de la factura aquí..." @bind="notasFactura"></textarea>
                 </div>
 
                 <!-- ACCIONES -->
                 <div class="factura-actions">
-                    <button type="button" class="btn" style="background: var(--blue-600); color: white; border: none; cursor: pointer;" @onclick="GuardarFactura">
+                    <button type="button" class="btn btn-primary" @onclick="GuardarFactura">
                         <i class="ph ph-floppy-disk"></i> Guardar Factura
                     </button>
-                    <button type="button" class="btn" style="background: var(--sage-600); color: white; border: none; cursor: pointer;" @onclick="DescargarPdf">
+                    <button type="button" class="btn btn-success" @onclick="DescargarPdf">
                         <i class="ph ph-download"></i> Descargar PDF
                     </button>
-                    <button type="button" class="btn" style="background: var(--wa-green); color: white; border: none; cursor: pointer;" @onclick="EnviarPorWhatsApp">
+                    <button type="button" class="btn btn-whatsapp" @onclick="EnviarPorWhatsApp">
                         <i class="ph ph-whatsapp-logo"></i> Enviar por WhatsApp
                     </button>
                 </div>
