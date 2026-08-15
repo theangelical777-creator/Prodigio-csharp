@@ -15,5 +15,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddSingleton<FacturaService>();
 builder.Services.AddSingleton<ProdigioDatabaseService>();
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<EmpresaInstitucionalService>();
 
 await builder.Build().RunAsync();
