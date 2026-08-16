@@ -172,22 +172,22 @@ window.generarPdfFactura = function(factura) {
         doc.text('Nombre:', 20, y);
         doc.text('RNC/Cédula:', 110, y);
         doc.setFont('helvetica', 'normal');
-        doc.text(factura.clienteNombre || '', 45, y);
-        doc.text(factura.clienteRNC || '', 135, y);
+        doc.text(factura.clienteNombre || factura.ClienteNombre || '', 45, y);
+        doc.text(factura.clienteRNC || factura.ClienteRNC || '', 135, y);
 
         y += 7;
         doc.setFont('helvetica', 'bold');
         doc.text('Teléfono:', 20, y);
         doc.text('Email:', 110, y);
         doc.setFont('helvetica', 'normal');
-        doc.text(factura.clienteTel || '', 45, y);
-        doc.text(factura.clienteEmail || '', 125, y);
+        doc.text(factura.clienteTel || factura.ClienteTel || '', 45, y);
+        doc.text(factura.clienteEmail || factura.ClienteEmail || '', 125, y);
 
         y += 7;
         doc.setFont('helvetica', 'bold');
         doc.text('Dirección:', 20, y);
         doc.setFont('helvetica', 'normal');
-        doc.text(factura.clienteDireccion || '', 45, y);
+        doc.text(factura.clienteDireccion || factura.ClienteDireccion || '', 45, y);
 
         // ── TABLA DE ARTÍCULOS ────────────────────────────────
         y += 16;
@@ -206,10 +206,10 @@ window.generarPdfFactura = function(factura) {
         doc.setTextColor(...colorGris);
         let subtotal = 0;
 
-        const items = factura.items || [];
+        const items = factura.items || factura.Items || [];
         items.forEach(function(item, idx) {
-            const cant    = Number(item.cantidad)       || 0;
-            const precio  = Number(item.precioUnitario) || 0;
+            const cant    = Number(item.cantidad || item.Cantidad) || 0;
+            const precio  = Number(item.precioUnitario || item.PrecioUnitario) || 0;
             const linea   = cant * precio;
             subtotal += linea;
 
@@ -219,7 +219,8 @@ window.generarPdfFactura = function(factura) {
             }
 
             // Truncar descripción larga
-            const desc = doc.splitTextToSize(item.descripcion || '', 100)[0] || '';
+            const descripcion = item.descripcion || item.Descripcion || '';
+            const desc = doc.splitTextToSize(descripcion, 100)[0] || '';
             doc.setFontSize(8);
             doc.text(desc,                                    18,       y);
             doc.text(cant.toString(),                         132,      y);
