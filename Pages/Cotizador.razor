@@ -2,7 +2,10 @@
 @page "/calculadora"
 @page "/financiamiento"
 
+@using ProdigioApp.Models
+@using ProdigioApp.Services
 @inject IJSRuntime JsRuntime
+@inject FacturaService FacturaService
 
 <PageTitle>Calculadora de Cuotas Fiao – Prodigio Tecnológico</PageTitle>
 
@@ -494,14 +497,6 @@
     
     private List<ItemFactura> facturasItems = new();
 
-    private class ItemFactura
-    {
-        public string Descripcion { get; set; } = "";
-        public decimal Cantidad { get; set; } = 1;
-        public decimal PrecioUnitario { get; set; } = 0;
-        public decimal Subtotal => Cantidad * PrecioUnitario;
-    }
-
     // CALCULADORA COMPUTED PROPERTIES
     private decimal inicial => precio * pct / 100m;
     private decimal financiado => precio - inicial;
@@ -591,7 +586,7 @@
         if (decimal.TryParse(raw, System.Globalization.NumberStyles.Any,
                               System.Globalization.CultureInfo.InvariantCulture, out var val))
         {
-            facturasItems[index].Cantidad = Math.Max(1, val);
+            facturasItems[index].Cantidad = (int)Math.Max(1, val);
         }
         else
         {
@@ -640,8 +635,29 @@
             return;
         }
 
+        var nuevaFactura = new Factura
+        {
+            Numero = numeroFactura,
+            Fecha = fechaEmision,
+            FechaVencimiento = fechaVencimiento,
+            Estado = EstadoFactura.Pendiente,
+            Notas = notasFactura,
+            Cliente = new Cliente
+            {
+                Nombre = facturaClienteNombre,
+                RNC = facturaClienteRNC,
+                Email = facturaClienteEmail,
+                Telefono = facturaClienteTel,
+                Direccion = facturaClienteDireccion
+            },
+            Items = itemsValidos
+        };
+
+        FacturaService.Crear(nuevaFactura);
+
         await MostrarToast($"Factura {numeroFactura} guardada exitosamente ✓", "success");
-        // Aquí iría la lógica para guardar en base de datos
+        // Reiniciar para nueva factura
+        numeroFactura = GenerarNumeroFactura();
     }
 
     private async Task DescargarPdf()
