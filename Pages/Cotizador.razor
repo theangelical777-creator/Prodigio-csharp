@@ -381,6 +381,89 @@
     </div>
 </section>
 
+<!-- ========== MODAL DE CONFIRMACIÓN DE COMPRA ========== -->
+@if (mostrarModalCompra)
+{
+    <div class="modal-overlay" @onclick="CerrarModal">
+        <div class="modal-compra" @onclick:stopPropagation="true">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <i class="ph ph-receipt" style="font-size:22px; color:var(--sage-600);"></i>
+                    <div>
+                        <h3 style="margin:0; font-size:1.1rem;">Confirmación de Compra</h3>
+                        <p style="margin:0; font-size:12px; opacity:.7;">Factura @numeroFactura</p>
+                    </div>
+                </div>
+                <button class="modal-close" @onclick="CerrarModal"><i class="ph ph-x"></i></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Cliente -->
+                <div class="modal-cliente">
+                    <span class="modal-label">Cliente</span>
+                    <span class="modal-value">@facturaClienteNombre</span>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(facturaClienteRNC))
+                {
+                    <div class="modal-cliente">
+                        <span class="modal-label">RNC/Cédula</span>
+                        <span class="modal-value">@facturaClienteRNC</span>
+                    </div>
+                }
+
+                <!-- Items -->
+                <div class="modal-items-header">
+                    <span>Artículo / Servicio</span>
+                    <span style="text-align:right;">Total</span>
+                </div>
+                @foreach (var item in itemsParaConfirmar)
+                {
+                    <div class="modal-item-row">
+                        <div>
+                            <span class="modal-item-desc">@item.Descripcion</span>
+                            <span class="modal-item-meta">@item.Cantidad × RD$ @item.PrecioUnitario.ToString("N2")</span>
+                        </div>
+                        <span class="modal-item-subtotal">RD$ @item.Subtotal.ToString("N2")</span>
+                    </div>
+                }
+
+                <!-- Totales -->
+                <div class="modal-totales">
+                    <div class="modal-total-row">
+                        <span>Subtotal:</span>
+                        <span>RD$ @SubtotalFactura.ToString("N2")</span>
+                    </div>
+                    <div class="modal-total-row">
+                        <span>ITBIS (18%):</span>
+                        <span>RD$ @ITBISFactura.ToString("N2")</span>
+                    </div>
+                    <div class="modal-total-row modal-grand-total">
+                        <span><strong>TOTAL A PAGAR:</strong></span>
+                        <strong>RD$ @TotalFactura.ToString("N2")</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @onclick="CerrarModal">Cancelar</button>
+                <button class="btn btn-success" @onclick="ConfirmarCompra" disabled="@procesandoCompra">
+                    @if (procesandoCompra)
+                    {
+                        <i class="ph ph-circle-notch" style="animation: spin 1s linear infinite;"></i>
+                        <span>Procesando...</span>
+                    }
+                    else
+                    {
+                        <i class="ph ph-check-circle"></i>
+                        <span>Confirmar y Generar Factura</span>
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+
 @code {
     // TAB MANAGEMENT
     private string activeTab = "calculadora";
@@ -504,7 +587,9 @@
     {
         if (index < 0 || index >= facturasItems.Count) return;
         var raw = e?.Value?.ToString() ?? "";
-        if (decimal.TryParse(raw, out var val))
+        // Usar InvariantCulture para que el punto decimal funcione siempre
+        if (decimal.TryParse(raw, System.Globalization.NumberStyles.Any,
+                              System.Globalization.CultureInfo.InvariantCulture, out var val))
         {
             facturasItems[index].Cantidad = Math.Max(1, val);
         }
@@ -519,7 +604,9 @@
     {
         if (index < 0 || index >= facturasItems.Count) return;
         var raw = e?.Value?.ToString() ?? "";
-        if (decimal.TryParse(raw, out var val))
+        // Usar InvariantCulture para que el punto decimal funcione siempre
+        if (decimal.TryParse(raw, System.Globalization.NumberStyles.Any,
+                              System.Globalization.CultureInfo.InvariantCulture, out var val))
         {
             facturasItems[index].PrecioUnitario = Math.Max(0, val);
         }
@@ -638,7 +725,12 @@
         return $"{DateTime.Now:yyyyMMdd}{new Random().Next(1000, 9999)}";
     }
 
-    // PROCEDER A LA COMPRA - Validación integral
+    // Estado del modal de confirmación
+    private bool mostrarModalCompra = false;
+    private bool procesandoCompra = false;
+    private List<ItemFactura> itemsParaConfirmar = new();
+
+    // PROCEDER A LA COMPRA - Validación integral + muestra modal con total
     private async Task ProcederALaCompra()
     {
         // Validar cliente
@@ -673,18 +765,45 @@
 
         if (itemsValidos.Count == 0)
         {
-            await MostrarToast("❌ Todos los artículos deben tener descripción y precio", "error");
+            await MostrarToast("❌ Todos los artículos deben tener descripción y precio mayor a 0", "error");
             return;
         }
 
-        // Todo validado - Proceder
+        if (SubtotalFactura <= 0)
+        {
+            await MostrarToast("❌ El total a pagar debe ser mayor a RD$ 0,00", "error");
+            return;
+        }
+
+        // Guardar items válidos para el modal
+        itemsParaConfirmar = itemsValidos;
+        mostrarModalCompra = true;
+        StateHasChanged();
+    }
+
+    private void CerrarModal()
+    {
+        mostrarModalCompra = false;
+        procesandoCompra = false;
+        StateHasChanged();
+    }
+
+    private async Task ConfirmarCompra()
+    {
+        procesandoCompra = true;
+        StateHasChanged();
+
         await MostrarToast("✓ Procesando factura...", "info");
-        
-        // Guardar automáticamente
+
+        // Guardar factura
         await GuardarFactura();
-        
-        // Descargar PDF automáticamente
-        await Task.Delay(500);
+
+        // Breve pausa antes de descargar PDF
+        await Task.Delay(600);
         await DescargarPdf();
+
+        procesandoCompra = false;
+        mostrarModalCompra = false;
+        StateHasChanged();
     }
 }
