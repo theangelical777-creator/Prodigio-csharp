@@ -806,20 +806,30 @@
 
     private async Task ConfirmarCompra()
     {
-        procesandoCompra = true;
-        StateHasChanged();
+        try 
+        {
+            procesandoCompra = true;
+            StateHasChanged();
 
-        await MostrarToast("✓ Procesando factura...", "info");
+            await MostrarToast("✓ Procesando factura...", "info");
 
-        // Guardar factura
-        await GuardarFactura();
+            // Guardar factura
+            await GuardarFactura();
 
-        // Breve pausa antes de descargar PDF
-        await Task.Delay(600);
-        await DescargarPdf();
-
-        procesandoCompra = false;
-        mostrarModalCompra = false;
-        StateHasChanged();
+            // Breve pausa antes de descargar PDF
+            await Task.Delay(600);
+            await DescargarPdf();
+        }
+        catch (Exception ex)
+        {
+            await JsRuntime.InvokeVoidAsync("console.error", "Error en ConfirmarCompra: " + ex.ToString());
+            await MostrarToast("Error inesperado al procesar", "error");
+        }
+        finally 
+        {
+            procesandoCompra = false;
+            mostrarModalCompra = false;
+            StateHasChanged();
+        }
     }
 }

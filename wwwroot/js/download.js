@@ -111,14 +111,12 @@ window.guardadoFacturaOk = function(numeroFactura) {
 
 // ── generarPdfFactura ────────────────────────────────────────
 window.generarPdfFactura = function(factura) {
-    // Verificar que jsPDF esté cargado
-    if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
-        window.showToast('⚠ La librería de PDF no está cargada. Verifica tu conexión e intenta de nuevo.', 'error');
-        console.error('[Prodigio] jsPDF no está disponible en window.jspdf');
-        return false;
-    }
-
     try {
+        if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
+            console.error("jsPDF no está cargado correctamente.");
+            return false;
+        }
+
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
             orientation: 'portrait',
