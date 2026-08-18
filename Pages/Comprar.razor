@@ -1,6 +1,7 @@
 @page "/tienda"
 @page "/comprar"
 @page "/productos"
+@inject NavigationManager Navigation
 
 <PageTitle>Tienda de Celulares – Prodigio Tecnológico</PageTitle>
 
@@ -110,11 +111,13 @@
                                 <span class="price-main">$@p.Precio.ToString("N0") RD$</span>
                             </div>
                             <div class="product-actions">
+                                <button @onclick="() => ComprarDirecto(p)" class="btn btn-primary btn-sm">
+                                    <i class="ph ph-shopping-cart"></i> Comprar Ahora
+                                </button>
                                 <a href="https://wa.me/18095550199?text=Hola,%20me%20interesa%20el%20@Uri.EscapeDataString(p.Modelo)"
-                                   target="_blank" class="btn btn-wa btn-sm">
-                                    <i class="ph ph-whatsapp-logo"></i> Comprar por WA
+                                   target="_blank" class="btn btn-wa btn-sm" title="Comprar por WhatsApp">
+                                    <i class="ph ph-whatsapp-logo"></i> WA
                                 </a>
-                                <a href="/cotizador" class="btn btn-outline btn-sm">Cotizar cuota</a>
                             </div>
                         </div>
                     </div>
@@ -191,4 +194,10 @@
 
     private int TotalPages => (int)Math.Ceiling((double)Filtered.Count() / perPage);
     private IEnumerable<Equipo> Paginated => Filtered.Skip((page - 1) * perPage).Take(perPage);
+
+    private void ComprarDirecto(Equipo p)
+    {
+        // Integración con el software de facturación pasándole el concepto (modelo) y precio
+        Navigation.NavigateTo($"/facturas/crear?concepto={Uri.EscapeDataString(p.Modelo)}&precio={p.Precio}");
+    }
 }

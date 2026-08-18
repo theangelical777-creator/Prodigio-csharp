@@ -155,6 +155,12 @@
 </EditForm>
 
 @code {
+    [SupplyParameterFromQuery]
+    private string? concepto { get; set; }
+
+    [SupplyParameterFromQuery]
+    private decimal? precio { get; set; }
+
     private Factura NuevaFactura { get; set; } = new();
     private DateTime? FechaVencimientoTemp { get; set; }
 
@@ -163,7 +169,15 @@
         NuevaFactura.Numero = FacturaService.GenerarNumero();
         NuevaFactura.Fecha = DateTime.Today;
         FechaVencimientoTemp = DateTime.Today.AddDays(30);
-        NuevaFactura.Items.Add(new ItemFactura { Descripcion = "", Cantidad = 1, PrecioUnitario = 0 });
+        
+        if (!string.IsNullOrEmpty(concepto) && precio.HasValue)
+        {
+            NuevaFactura.Items.Add(new ItemFactura { Descripcion = concepto, Cantidad = 1, PrecioUnitario = precio.Value });
+        }
+        else
+        {
+            NuevaFactura.Items.Add(new ItemFactura { Descripcion = "", Cantidad = 1, PrecioUnitario = 0 });
+        }
     }
 
     private void AgregarItem()
