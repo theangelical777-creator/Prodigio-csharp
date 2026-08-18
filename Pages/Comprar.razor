@@ -69,7 +69,7 @@
                         <option value="desc">Precio: mayor → menor</option>
                     </select>
                 </div>
-                <span class="results-count" style="margin-left:auto;">Mostrando <strong>@Paginated.Count()</strong> de <strong>Filtered.Count()</strong> equipos</span>
+                <span class="results-count" style="margin-left:auto;">Mostrando <strong>@Paginated.Count()</strong> de <strong>@Filtered.Count()</strong> equipos</span>
             </div>
         </div>
 
@@ -88,7 +88,7 @@
             <div class="products-grid">
                 @foreach (var p in Paginated)
                 {
-                    <div class="product-card">
+                    <div class="product-card" @key="p.Modelo">
                         <div class="product-img-wrap">
                             <div class="product-badges">
                                 <span class="badge-stock">✓ En Stock</span>
@@ -154,7 +154,7 @@
     private int page = 1;
     private int perPage = 8;
 
-    private List<string> marcas = new() { "Todas", "iPhone", "Samsung", "Xiaomi", "Tecno", "Infinix", "Otros" };
+    private List<string> marcas = new() { "Todas", "iPhone", "Samsung", "Xiaomi", "Tecno", "Infinix", "Accesorios", "Otros" };
 
     public record Equipo(string Marca, string Modelo, string Cap, string Color, string Estado, decimal Precio, decimal PrecioAnterior, string Imagen);
 
@@ -175,6 +175,10 @@
         new("Honor",   "HONOR Magic8 Lite",      "256 GB", "Verde Esmeralda",  "Sellado",   17500, 19250, "/honormagic.png"),
         new("Xiaomi",  "Redmi Note 13 Pro+",       "256 GB", "Blanco Aurora",   "Sellado",    19800, 21780, "/redminote13.png"),
         new("Otros",   "Google Pixel 8 Pro",       "128 GB", "Bay Blue",        "Como Nuevo", 39900, 46000, "/pixel8pro.png"),
+        new("Accesorios", "Funda Anti-Shock",      "N/A",    "Transparente",    "Nuevo",      800,   1200,  "/images/funda_1787021848219.jpg"),
+        new("Accesorios", "Cargador Rápido 20W",   "N/A",    "Blanco",          "Nuevo",      1200,  1500,  "/images/cargador_1787021856216.jpg"),
+        new("Accesorios", "Audífonos Bluetooth",   "N/A",    "Negro",           "Nuevo",      2500,  3000,  "/images/audifonos_1787021865670.jpg"),
+        new("Accesorios", "Protector de Pantalla", "N/A",    "Cristal Templado","Nuevo",      500,   800,   "/images/protector_1787021872561.jpg")
     };
 
     private void Reset() { q = ""; activeMarca = "Todas"; condicion = "Todos"; orden = ""; page = 1; }

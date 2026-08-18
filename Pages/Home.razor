@@ -163,7 +163,7 @@
         <div class="products-grid">
             @foreach (var p in FiltradoHome)
             {
-                <div class="product-card fade-in-up">
+                <div class="product-card fade-in-up" @key="p.Modelo">
                     <div class="product-img-wrap">
                         <div class="product-badges">
                             <span class="badge-stock">✓ En Stock</span>
@@ -198,6 +198,37 @@
             <a href="tienda" class="btn btn-primary btn-lg">
                 Ver todos los productos en la Tienda <i class="ph ph-arrow-right"></i>
             </a>
+        </div>
+    </div>
+</section>
+
+<!-- ── TESTIMONIOS ───────────────────────────────────────── -->
+<section class="testimonials-section page-offset" style="background:var(--bg-100); padding: 4rem 0;">
+    <div class="section-inner">
+        <div class="section-header-block center">
+            <span class="section-label">Testimonios</span>
+            <h2 class="section-title">Clientes Satisfechos</h2>
+            <p class="section-subtitle center">Lo que dicen nuestros clientes de nosotros.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div style="color:var(--amber); font-size:1.5rem; margin-bottom:1rem;">★★★★★</div>
+                <h4>Excelente servicio y rapidez</h4>
+                <p>"Compré mi iPhone 14 Pro aquí y todo fue perfecto. La atención al cliente fue excelente y el envío muy rápido. ¡Recomendado 100%!"</p>
+                <div style="margin-top:1rem; font-weight:600;">- Carlos P.</div>
+            </div>
+            <div class="service-card">
+                <div style="color:var(--amber); font-size:1.5rem; margin-bottom:1rem;">★★★★★</div>
+                <h4>Equipos en perfectas condiciones</h4>
+                <p>"Aproveché la oferta de Trade-In y di mi celular viejo. El nuevo Galaxy S24 Ultra que recibí estaba intacto, como nuevo. Muy confiables."</p>
+                <div style="margin-top:1rem; font-weight:600;">- Maria S.</div>
+            </div>
+            <div class="service-card">
+                <div style="color:var(--amber); font-size:1.5rem; margin-bottom:1rem;">★★★★★</div>
+                <h4>Mejor financiamiento</h4>
+                <p>"Pude sacar mi celular con el financiamiento Fiao súper rápido, sin mucho papeleo y con cuotas que se ajustan a mi bolsillo."</p>
+                <div style="margin-top:1rem; font-weight:600;">- Jose L.</div>
+            </div>
         </div>
     </div>
 </section>
@@ -263,14 +294,14 @@
 
     private List<Producto> lista = new()
     {
-        new("iPhone",  "iPhone 15 Pro Max",      "256 GB", "Titanio Natural", "Como Nuevo", 62500, "iphone15promax.png"),
-        new("Samsung", "Galaxy S24 Ultra",       "512 GB", "Titanium Gray",   "Sellado",    68000, "s24ultra.png"),
-        new("Motorola","Motorola Edge+ 2023",    "512 GB", "Interstellar Black","Sellado",  41500, "motorolaedge.png"),
-        new("Honor",   "HONOR Magic8 Lite",      "256 GB", "Verde Esmeralda",  "Sellado",   17500, "honormagic.png"),
-        new("Xiaomi",  "Redmi Note 13 Pro+",     "256 GB", "Blanco Aurora",   "Sellado",    19800, "redminote13.png"),
-        new("Infinix", "Infinix Note 40 Pro 5G", "256 GB", "Vintage Green",   "Sellado",    16500, "infinixnote40.png"),
-        new("Tecno",   "Tecno Camon 30 Pro 5G",  "256 GB", "Snowy White",     "Sellado",    18500, "tecnocamon30.png"),
-        new("Tecno",   "Tecno Spark 20 Pro+",    "256 GB", "Temporal Orbits", "Sellado",    13900, "tecnospark20.png"),
+        new("iPhone",  "iPhone 15 Pro Max",      "256 GB", "Titanio Natural", "Como Nuevo", 62500, "/iphone15promax.png"),
+        new("Samsung", "Galaxy S24 Ultra",       "512 GB", "Titanium Gray",   "Sellado",    68000, "/s24ultra.png"),
+        new("Motorola","Motorola Edge+ 2023",    "512 GB", "Interstellar Black","Sellado",  41500, "/motorolaedge.png"),
+        new("Honor",   "HONOR Magic8 Lite",      "256 GB", "Verde Esmeralda",  "Sellado",   17500, "/honormagic.png"),
+        new("Xiaomi",  "Redmi Note 13 Pro+",     "256 GB", "Blanco Aurora",   "Sellado",    19800, "/redminote13.png"),
+        new("Infinix", "Infinix Note 40 Pro 5G", "256 GB", "Vintage Green",   "Sellado",    16500, "/infinixnote40.png"),
+        new("Tecno",   "Tecno Camon 30 Pro 5G",  "256 GB", "Snowy White",     "Sellado",    18500, "/tecnocamon30.png"),
+        new("Tecno",   "Tecno Spark 20 Pro+",    "256 GB", "Temporal Orbits", "Sellado",    13900, "/tecnospark20.png"),
     };
 
     private IEnumerable<Producto> FiltradoHome =>
