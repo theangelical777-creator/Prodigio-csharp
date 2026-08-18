@@ -1,4 +1,5 @@
 @page "/nosotros"
+@inject EmpresaInstitucionalService InstitucionalService
 
 <PageTitle>Sobre Nosotros - Prodigio Tecnológico | Santo Domingo</PageTitle>
 
@@ -56,8 +57,60 @@
 
     <!-- Propuesta de Valor y Servicios -->
     <div class="section-header text-center mb-5 fade-in">
+        <h2 class="gradient-title">Nuestra Misión y Visión</h2>
+        <p class="section-subtitle center">El propósito que nos impulsa día a día.</p>
+    </div>
+
+    <div class="nosotros-values-grid fade-in mb-5">
+        <div class="value-card" style="grid-column: span 1;">
+            <span class="value-icon">🎯</span>
+            <h4>Misión</h4>
+            <p>@institucional.Mision</p>
+        </div>
+        <div class="value-card" style="grid-column: span 1;">
+            <span class="value-icon">👁️</span>
+            <h4>Visión</h4>
+            <p>@institucional.Vision</p>
+        </div>
+        <div class="value-card" style="grid-column: span 1;">
+            <span class="value-icon">💎</span>
+            <h4>Valores</h4>
+            <ul style="text-align: left; margin-top: 10px; padding-left: 20px;">
+                @foreach (var valor in institucional.Valores)
+                {
+                    <li><strong>@valor.Nombre:</strong> @valor.Descripcion</li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <!-- Políticas de Venta -->
+    <div class="section-header text-center mb-5 fade-in">
+        <h2 class="gradient-title">Políticas de Venta y Garantía</h2>
+        <p class="section-subtitle center">Transparencia total en cada transacción.</p>
+    </div>
+
+    <div class="nosotros-values-grid fade-in mb-5">
+        <div class="value-card">
+            <span class="value-icon">🛡️</span>
+            <h4>Garantía de 12 Meses</h4>
+            <p>Todos nuestros equipos cuentan con garantía escrita de 1 año contra defectos de fábrica.</p>
+        </div>
+        <div class="value-card">
+            <span class="value-icon">🔙</span>
+            <h4>Política de Devoluciones</h4>
+            <p>Aceptamos devoluciones dentro de los primeros 7 días hábiles, sujeto a inspección técnica del equipo.</p>
+        </div>
+        <div class="value-card">
+            <span class="value-icon">💳</span>
+            <h4>Métodos de Pago</h4>
+            <p>Aceptamos transferencias, tarjetas de crédito y financiamiento con aprobación inmediata.</p>
+        </div>
+    </div>
+
+    <div class="section-header text-center mb-5 fade-in">
         <h2 class="gradient-title">¿Por qué elegirnos?</h2>
-        <p class="section-subtitle center">Los 5 pilares que nos diferencian de la competencia en el mercado dominicano</p>
+        <p class="section-subtitle center">Los pilares que nos diferencian de la competencia en el mercado dominicano</p>
     </div>
 
     <div class="nosotros-values-grid fade-in mb-5">
@@ -110,3 +163,12 @@
     </div>
 
 </div>
+
+@code {
+    private EmpresaInstitucional institucional = new();
+
+    protected override void OnInitialized()
+    {
+        institucional = InstitucionalService.Obtener();
+    }
+}
