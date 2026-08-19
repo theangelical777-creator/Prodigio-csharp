@@ -110,26 +110,32 @@
                     Cada equipo seminuevo que vendemos pasa por 40 pruebas técnicas de certificación para garantizar batería óptima, pantalla 100% funcional y estética impecable.
                 </p>
 
-                <div class="nosotros-values-grid mt-6 mb-6" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="value-card" style="background: var(--bg-100); padding: 20px; border-radius: 12px;">
-                        <span class="value-icon">🎯</span>
-                        <h4 style="margin-top:10px; color: var(--red-fc);">Misión</h4>
-                        <p style="font-size: 0.95rem; color: var(--text-700);">@institucional.Mision</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; margin-bottom: 24px;">
+                    <!-- Mision -->
+                    <div class="service-card" style="text-align: center; padding: 28px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07);">
+                        <div style="font-size: 2rem; margin-bottom: 12px;">🎯</div>
+                        <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--text-900);">Misión</h4>
+                        <p style="font-size: 0.92rem; color: var(--text-600); line-height: 1.6;">@institucional.Mision</p>
                     </div>
-                    <div class="value-card" style="background: var(--bg-100); padding: 20px; border-radius: 12px;">
-                        <span class="value-icon">👁️</span>
-                        <h4 style="margin-top:10px; color: var(--red-fc);">Visión</h4>
-                        <p style="font-size: 0.95rem; color: var(--text-700);">@institucional.Vision</p>
+                    <!-- Vision -->
+                    <div class="service-card" style="text-align: center; padding: 28px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07);">
+                        <div style="font-size: 2rem; margin-bottom: 12px;">👁️</div>
+                        <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--text-900);">Visión</h4>
+                        <p style="font-size: 0.92rem; color: var(--text-600); line-height: 1.6;">@institucional.Vision</p>
                     </div>
-                    <div class="value-card" style="grid-column: span 2; background: var(--bg-100); padding: 20px; border-radius: 12px;">
-                        <span class="value-icon">💎</span>
-                        <h4 style="margin-top:10px; color: var(--red-fc);">Valores</h4>
-                        <ul style="text-align: left; margin-top: 10px; padding-left: 20px; font-size: 0.95rem; color: var(--text-700);">
+                    <!-- Valores -->
+                    <div class="service-card" style="grid-column: span 2; text-align: center; padding: 28px 24px; background: #fff; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07);">
+                        <div style="font-size: 2rem; margin-bottom: 12px;">💎</div>
+                        <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--text-900);">Valores</h4>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 10px;">
                             @foreach (var valor in institucional.Valores)
                             {
-                                <li><strong>@valor.Nombre:</strong> @valor.Descripcion</li>
+                                <div style="background: var(--bg-100); border-radius: 10px; padding: 10px 16px; font-size: 0.88rem; color: var(--text-700);">
+                                    <strong>@valor.Emoji @valor.Nombre</strong><br/>
+                                    <span>@valor.Descripcion</span>
+                                </div>
                             }
-                        </ul>
+                        </div>
                     </div>
                 </div>
                 
@@ -300,14 +306,14 @@
 
     private List<Producto> lista = new()
     {
-        new("iPhone",  "iPhone 15 Pro Max",      "256 GB", "Titanio Natural", "Como Nuevo", 62500, "/iphone15promax.png"),
-        new("Samsung", "Galaxy S24 Ultra",       "512 GB", "Titanium Gray",   "Sellado",    68000, "/s24ultra.png"),
-        new("Motorola","Motorola Edge+ 2023",    "512 GB", "Interstellar Black","Sellado",  41500, "/motorolaedge.png"),
-        new("Honor",   "HONOR Magic8 Lite",      "256 GB", "Verde Esmeralda",  "Sellado",   17500, "/honormagic.png"),
-        new("Xiaomi",  "Redmi Note 13 Pro+",     "256 GB", "Blanco Aurora",   "Sellado",    19800, "/redminote13.png"),
-        new("Infinix", "Infinix Note 40 Pro 5G", "256 GB", "Vintage Green",   "Sellado",    16500, "/infinixnote40.png"),
-        new("Tecno",   "Tecno Camon 30 Pro 5G",  "256 GB", "Snowy White",     "Sellado",    18500, "/tecnocamon30.png"),
-        new("Tecno",   "Tecno Spark 20 Pro+",    "256 GB", "Temporal Orbits", "Sellado",    13900, "/tecnospark20.png"),
+        new("iPhone",  "iPhone 15 Pro Max",      "256 GB", "Titanio Natural", "Como Nuevo", 62500, "iphone15promax.png"),
+        new("Samsung", "Galaxy S24 Ultra",       "512 GB", "Titanium Gray",   "Sellado",    68000, "https://images.samsung.com/is/image/samsung/p6pim/levant/2401/gallery/levant-galaxy-s24-ultra-s928-sm-s928bztgmea-thumb-539573388"),
+        new("Motorola","Motorola Edge+ 2023",    "512 GB", "Interstellar Black","Sellado",  41500, "https://motorola-global-portal.custhelp.com/ci/fattach/get/232990/0/filename/edge_2023_pdp_hero_black.png"),
+        new("Honor",   "HONOR Magic8 Lite",      "256 GB", "Verde Esmeralda",  "Sellado",   17500, "https://consumer.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/honor-magic6-lite/img/honor-magic6-lite-overview-01.jpg"),
+        new("Xiaomi",  "Redmi Note 13 Pro+",     "256 GB", "Blanco Aurora",   "Sellado",    19800, "https://i02.appmifile.com/mi-com-product/fly-birds/redmi-note-13-pro-plus/M/dd5b50f19c3e0e065bdc2d5b78b58e61.png"),
+        new("Infinix", "Infinix Note 40 Pro 5G", "256 GB", "Vintage Green",   "Sellado",    16500, "https://in.infinixmobility.com/media/catalog/product/i/n/infinix_note40pro_5g_3.png"),
+        new("Tecno",   "Tecno Camon 30 Pro 5G",  "256 GB", "Snowy White",     "Sellado",    18500, "https://ng.tecno-mobile.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/c/a/camon30series_snowywhite_main.png"),
+        new("Tecno",   "Tecno Spark 20 Pro+",    "256 GB", "Temporal Orbits", "Sellado",    13900, "https://ng.tecno-mobile.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/s/p/spark20pro_temporalorbits.png"),
     };
 
     private IEnumerable<Producto> FiltradoHome =>
