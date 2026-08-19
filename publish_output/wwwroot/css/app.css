@@ -1992,13 +1992,13 @@ ul, ol { list-style: none; }
 
 /* Green WhatsApp Button */
 .wa-fab {
-    width: 58px;
-    height: 58px;
-    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
     background: var(--wa-green);
     border: none;
     color: var(--white);
-    font-size: 28px;
+    font-size: 34px;
     cursor: pointer;
     box-shadow: 0 6px 24px rgba(37,211,102,.50), 0 2px 8px rgba(37,211,102,.30);
     display: flex;
