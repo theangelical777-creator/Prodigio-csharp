@@ -93,7 +93,7 @@
         <div class="about-grid">
 
             <div class="about-img-wrap">
-                <img src="catalog_store.png" alt="Tienda Prodigio Tecnológico" class="about-img" />
+                <img src="donde_tu_eres_el_valor.jpg" alt="Donde tú eres el valor" class="about-img" style="border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);" />
                 <div class="about-stat-card">
                     <div class="about-stat-num">2019</div>
                     <div class="about-stat-label">Fundada en Santo Domingo, RD</div>
@@ -133,11 +133,6 @@
                     </div>
                 </div>
                 
-                <div class="code-block-section mt-6 mb-6" style="background: #1e1e1e; padding: 20px; border-radius: 12px; color: #d4d4d4; font-family: monospace; overflow-x: auto;">
-                    <h4 style="color: #569cd6; margin-bottom: 15px;">Código Institucional:</h4>
-                    <pre style="margin: 0;"><code>@codigoFuente</code></pre>
-                </div>
-
                 <div class="flex gap-3 mt-8">
                     <a href="nosotros" class="btn btn-primary">Conocer más →</a>
                     <a href="contacto" class="btn btn-outline">Contactarnos</a>
@@ -292,12 +287,10 @@
 
 @code {
     private ProdigioApp.Models.EmpresaInstitucional institucional = new();
-    private string codigoFuente = "";
 
     protected override void OnInitialized()
     {
         institucional = InstitucionalService.Obtener();
-        codigoFuente = InstitucionalService.ObtenerCodigoFuente();
     }
 
     private string activeMarca = "Todas";

@@ -84,6 +84,15 @@
         </div>
     </div>
 
+    <!-- Código Institucional -->
+    <div class="section-header text-center mb-4 fade-in">
+        <h2 class="gradient-title">Código Institucional</h2>
+        <p class="section-subtitle center">El código fuente de nuestra identidad corporativa.</p>
+    </div>
+    <div class="fade-in mb-5" style="background: #1e1e1e; padding: 24px; border-radius: 12px; color: #d4d4d4; font-family: monospace; overflow-x: auto;">
+        <pre style="margin: 0; font-size: 0.85rem; line-height: 1.6;"><code>@codigoFuente</code></pre>
+    </div>
+
     <!-- Políticas de Venta -->
     <div class="section-header text-center mb-5 fade-in">
         <h2 class="gradient-title">Políticas de Venta y Garantía</h2>
@@ -166,9 +175,11 @@
 
 @code {
     private EmpresaInstitucional institucional = new();
+    private string codigoFuente = "";
 
     protected override void OnInitialized()
     {
         institucional = InstitucionalService.Obtener();
+        codigoFuente = InstitucionalService.ObtenerCodigoFuente();
     }
 }
